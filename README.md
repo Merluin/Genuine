@@ -8,7 +8,7 @@ The R folder contains all the scripts, datasets, and related files for conductin
 
 1. **Download the entire R folder**: To ensure that all dependencies and necessary files are included, it's recommended to download the entire R folder rather than individual files.
 
-2. **Open the R Project file**: This repository includes an R Project file (`Genuine_Experiment.Rproj`). Opening this file in RStudio will set the working directory to the R folder automatically, ensuring that all relative paths within the scripts are correctly referenced.
+2. **Open the R Project file**: This repository includes an R Project file (`Genuine.Rproj`). Opening this file in RStudio will set the working directory to the R folder automatically, ensuring that all relative paths within the scripts are correctly referenced.
 
 3. **Execute the scripts**: Within RStudio, navigate to the `Scripts` directory and open the desired R script (`.R` files) for the analysis you wish to perform. Follow the instructions provided within each script to execute the analysis steps.
 
