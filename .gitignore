@@ -7,10 +7,15 @@ bin-release/
 # Other files and folders
 .settings/
 01.experiment/
+Psychopy/
 02.data/Stimuli_validation/
 02.data/genuine/original_data/
 02.data/genuine/DatiGenuine/
 02.data/genuine/archives/
+R/Stimuli_validation/
+R/analysis/original_data/
+R/analysis/DatiGenuine/
+R/analysis/archives/
 # Executables
 *.swf
 *.air
