@@ -1,0 +1,199 @@
+2.0248 	WARNING 	We strongly recommend you activate the PTB sound engine in PsychoPy prefs as the preferred audio engine. Its timing is vastly superior. Your prefs are currently set to use ['sounddevice', 'PTB', 'pyo', 'pygame'] (in that order).
+9.2231 	EXP 	Created window1 = Window(allowGUI=False, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([-1, -1, -1]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x7ff1412c6730>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x7ff1bba72bb0>, multiSample=False, name='window1', numSamples=2, pos=[420.0, 262.5], screen=0, size=array([3360, 2100]), stencilBits=0, stereo=False, units='height', useFBO=True, useRetina=True, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+9.2234 	EXP 	window1: mouseVisible = True
+9.2235 	EXP 	window1: Attempting to measure frame rate of screen (0) ...
+9.2235 	EXP 	window1: recordFrameIntervals = False
+9.3040 	EXP 	window1: recordFrameIntervals = True
+9.4475 	WARNING 	t of last frame was 10.40ms (=1/96)
+9.6308 	WARNING 	t of last frame was 10.16ms (=1/98)
+9.7881 	EXP 	Screen (0) actual frame rate measured at 119.78Hz
+9.7881 	EXP 	window1: recordFrameIntervals = False
+13.3497 	EXP 	Created welcome_txt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='welcome_txt', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Premere il pulsante blu per iniziare', units='height', win=Window(...), wrapWidth=1)
+13.3951 	EXP 	Created welcome_img = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, image='interface/button_avanti.png', interpolate=True, mask=None, maskParams=None, name='welcome_img', opacity=1.0, ori=0.0, pos=array([ 400., -250.]), size=array([251.5, 118. ]), texRes=128.0, units='pix', win=Window(...))
+13.3953 	EXP 	window1: mouseVisible = True
+13.3975 	EXP 	Created blackscreen_txt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='blackscreen_txt', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+13.4100 	EXP 	Created gesino_txt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='gesino_txt', opacity=1.0, ori=0.0, pos=array([0. , 0.2]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+13.4136 	EXP 	Created genuine_txt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='genuine_txt', opacity=1.0, ori=0.0, pos=array([0. , 0.2]), rgb=UNKNOWN, text="L'emozione mostrata era genuina?", units='height', win=Window(...), wrapWidth=1)
+13.4348 	EXP 	window1: mouseVisible = True
+13.6087 	EXP 	Created genuine_slider = Slider(__class__=<class 'psychopy.visual.slider.Slider'>, autoDraw=False, autoLog=True, borderColor=None, color=None, colorSpace='rgb', depth=-1, fillColor=None, flip=False, font='Open Sans', granularity=1.0, labelColor=None, labelHeight=0.05, labelWrapWidth=None, labels=list(...), lineColor=None, markerColor=None, name='genuine_slider', opacity=None, ori=0.0, pos=array([0., 0.]), readOnly=False, self=UNKNOWN, size=array([0.95, 0.05]), startValue=0, style='rating', styleTweaks=['labels45'], ticks=ndarray(...), units='height', win=Window(...))
+13.6248 	EXP 	Created genuine_img = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, image='interface/button_avanti.png', interpolate=True, mask=None, maskParams=None, name='genuine_img', opacity=1.0, ori=0.0, pos=array([ 400., -250.]), size=array([251.5, 118. ]), texRes=128.0, units='pix', win=Window(...))
+13.6249 	EXP 	window1: mouseVisible = True
+13.6361 	EXP 	Created genuine_txt2 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-4.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.03, italic=False, languageStyle='LTR', name='genuine_txt2', opacity=1.0, ori=0.0, pos=array([ 0. , -0.4]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+13.6399 	EXP 	Created emotion_txt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='emotion_txt', opacity=1.0, ori=0.0, pos=array([0. , 0.2]), rgb=UNKNOWN, text="L'emozione mostrata era:", units='height', win=Window(...), wrapWidth=1)
+13.6563 	EXP 	Created fear = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, image='interface/button_fear.png', interpolate=True, mask=None, maskParams=None, name='fear', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([251.5, 118. ]), texRes=128.0, units='pix', win=Window(...))
+13.6704 	EXP 	Created anger = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-3.0, flipHoriz=False, flipVert=False, image='interface/button_anger.png', interpolate=True, mask=None, maskParams=None, name='anger', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([251.5, 118. ]), texRes=128.0, units='pix', win=Window(...))
+13.6862 	EXP 	Created happiness = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-4.0, flipHoriz=False, flipVert=False, image='interface/button_happiness.png', interpolate=True, mask=None, maskParams=None, name='happiness', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([251.5, 118. ]), texRes=128.0, units='pix', win=Window(...))
+13.6864 	EXP 	window1: mouseVisible = True
+13.6900 	EXP 	Created intensity_txt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='intensity_txt', opacity=1.0, ori=0.0, pos=array([0. , 0.2]), rgb=UNKNOWN, text="L'emozione mostrata era intensa?", units='height', win=Window(...), wrapWidth=1)
+13.6957 	EXP 	window1: mouseVisible = True
+13.7874 	EXP 	Created intensity_slider = Slider(__class__=<class 'psychopy.visual.slider.Slider'>, autoDraw=False, autoLog=True, borderColor=None, color=None, colorSpace='rgb', depth=-1, fillColor=None, flip=False, font='Open Sans', granularity=1.0, labelColor=None, labelHeight=0.05, labelWrapWidth=None, labels=list(...), lineColor=None, markerColor=None, name='intensity_slider', opacity=None, ori=0.0, pos=array([0., 0.]), readOnly=False, self=UNKNOWN, size=array([0.75, 0.05]), startValue=0, style='rating', styleTweaks=['labels45'], ticks=array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), units='height', win=Window(...))
+13.8028 	EXP 	Created intensity_img = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, image='interface/button_avanti.png', interpolate=True, mask=None, maskParams=None, name='intensity_img', opacity=1.0, ori=0.0, pos=array([ 400., -250.]), size=array([251.5, 118. ]), texRes=128.0, units='pix', win=Window(...))
+13.8029 	EXP 	window1: mouseVisible = True
+13.8088 	EXP 	Created intensity_txt2 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-4.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.03, italic=False, languageStyle='LTR', name='intensity_txt2', opacity=1.0, ori=0.0, pos=array([ 0. , -0.4]), rgb=UNKNOWN, text='0 = Per niente intensa, 9 = Molto intensa', units='height', win=Window(...), wrapWidth=1)
+13.8132 	EXP 	Created end_txt = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='end_txt', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text="L'esperimento è finito.\n\nGrazie", units='height', win=Window(...), wrapWidth=1)
+13.8444 	EXP 	genuine_slider: autoLog = True
+13.8444 	EXP 	genuine_slider: markerPos = 0
+13.8444 	EXP 	genuine_slider: styleTweaks = []
+13.8444 	EXP 	genuine_slider: styleTweaks = []
+13.8444 	EXP 	genuine_slider: styleTweaks = ['labels45']
+13.8444 	EXP 	genuine_slider: styleTweaks = ['labels45']
+13.8444 	EXP 	genuine_slider: contrast = 1.0
+13.8444 	EXP 	genuine_slider: autoLog = True
+13.8444 	EXP 	intensity_slider: autoLog = True
+13.8444 	EXP 	intensity_slider: markerPos = 0
+13.8444 	EXP 	intensity_slider: styleTweaks = []
+13.8444 	EXP 	intensity_slider: styleTweaks = []
+13.8444 	EXP 	intensity_slider: styleTweaks = ['labels45']
+13.8444 	EXP 	intensity_slider: styleTweaks = ['labels45']
+13.8444 	EXP 	intensity_slider: contrast = 1.0
+13.8444 	EXP 	intensity_slider: autoLog = True
+13.8444 	EXP 	welcome_txt: autoDraw = True
+13.8444 	EXP 	welcome_img: autoDraw = True
+14.9161 	DATA 	Mouse: Left button down, pos=(1010,427)
+14.9459 	EXP 	Imported PEDFE/edited/PEDFE.xlsx as conditions, 65 conditions, 8 params
+14.9474 	EXP 	Created sequence: random, trialTypes=65, nReps=1, seed=None
+14.9478 	EXP 	New trial (rep=0, index=0): {'file': '3_pg_1.mp4', 'id': 3, 'emotion': 'fear', 'elicitation': 'genuine', 'clip': 1, 'h': 854, 'w': 480, 'genuine': 'v'}
+14.9491 	EXP 	window1: mouseVisible = False
+14.9616 	EXP 	welcome_txt: autoDraw = False
+14.9616 	EXP 	welcome_img: autoDraw = False
+14.9616 	EXP 	blackscreen_txt: autoDraw = True
+15.0240 	DATA 	Mouse:  Left button up, pos=(1010,427)
+17.9218 	EXP 	window1: mouseVisible = False
+18.2455 	EXP 	Created trial_mp4 = MovieStim3(__class__=<class 'psychopy.visual.movie3.MovieStim3'>, anchor=('center', 'center'), autoLog=True, color=UNKNOWN, colorSpace=UNKNOWN, depth=-1.0, filename='PEDFE/edited/3_pg_1.mp4', flipHoriz=False, flipVert=False, fps=UNKNOWN, interpolate=True, loop=False, name='trial_mp4', noAudio=True, opacity=1, ori=method-wrapper(...), pos=array([0., 0.]), size=None, units='pix', vframe_callback=UNKNOWN, volume=UNKNOWN, win=Window(...))
+18.4638 	WARNING 	0.21818099600022833: Video catchup needed, advancing self._nextFrameT from 0.0 to 0.03273322422258593
+18.4638 	WARNING 	0.21826300599968818: Video catchup needed, advancing self._nextFrameT from 0.03273322422258593 to 0.06546644844517185
+18.4639 	WARNING 	0.21828328000083275: Video catchup needed, advancing self._nextFrameT from 0.06546644844517185 to 0.09819967266775778
+18.4639 	WARNING 	0.21829949099992518: Video catchup needed, advancing self._nextFrameT from 0.09819967266775778 to 0.1309328968903437
+18.4639 	WARNING 	0.2183147209998424: Video catchup needed, advancing self._nextFrameT from 0.1309328968903437 to 0.16366612111292964
+18.5068 	EXP 	blackscreen_txt: autoDraw = False
+18.5068 	EXP 	trial_mp4: autoLog = True
+18.5068 	EXP 	trial_mp4: movie = 'PEDFE/edited/3_pg_1.mp4'
+18.5068 	EXP 	trial_mp4: ori = 0.0
+18.5068 	EXP 	trial_mp4: autoDraw = True
+20.3761 	EXP 	Set trial_mp4 finished
+20.3773 	EXP 	window1: mouseVisible = True
+20.3865 	EXP 	trial_mp4: autoDraw = False
+20.3865 	EXP 	gesino_txt: autoDraw = True
+21.2188 	DATA 	Keypress: v
+21.3286 	EXP 	gesino_txt: autoDraw = False
+21.3286 	EXP 	genuine_slider: markerPos = 0
+21.3286 	EXP 	genuine_slider: markerPos = None
+21.3286 	EXP 	genuine_txt: autoDraw = True
+21.3286 	EXP 	genuine_slider: autoDraw = True
+21.3286 	EXP 	genuine_txt2: autoDraw = True
+23.1697 	DATA 	Mouse: Left button down, pos=(928,527)
+23.2383 	EXP 	genuine_slider: markerPos = 2.470175467039409
+23.2697 	DATA 	Mouse:  Left button up, pos=(928,527)
+23.2884 	EXP 	genuine_slider: markerPos = 2.470175467039409
+23.3381 	EXP 	genuine_slider: markerPos = 2.0
+23.3853 	EXP 	genuine_img: autoDraw = True
+24.2551 	DATA 	Mouse: Left button down, pos=(1051,363)
+24.3490 	DATA 	Mouse:  Left button up, pos=(1051,363)
+24.7839 	DATA 	Mouse: Left button down, pos=(998,394)
+24.8051 	EXP 	genuine_txt: autoDraw = False
+24.8051 	EXP 	genuine_slider: autoDraw = False
+24.8051 	EXP 	genuine_img: autoDraw = False
+24.8051 	EXP 	genuine_txt2: autoDraw = False
+24.8051 	EXP 	emotion_txt: autoDraw = True
+24.8051 	EXP 	fear: autoDraw = True
+24.8051 	EXP 	anger: autoDraw = True
+24.8051 	EXP 	happiness: autoDraw = True
+24.8735 	DATA 	Mouse:  Left button up, pos=(998,394)
+25.4084 	DATA 	Mouse: Left button down, pos=(816,550)
+25.5109 	EXP 	emotion_txt: autoDraw = False
+25.5109 	EXP 	fear: autoDraw = False
+25.5109 	EXP 	anger: autoDraw = False
+25.5109 	EXP 	happiness: autoDraw = False
+25.5109 	EXP 	intensity_slider: markerPos = 0
+25.5109 	EXP 	intensity_slider: markerPos = None
+25.5109 	EXP 	intensity_txt: autoDraw = True
+25.5109 	EXP 	intensity_slider: autoDraw = True
+25.5109 	EXP 	intensity_txt2: autoDraw = True
+25.5143 	DATA 	Mouse:  Left button up, pos=(816,550)
+26.4457 	DATA 	Mouse: Left button down, pos=(917,517)
+26.5075 	EXP 	intensity_slider: markerPos = 6.237142860889435
+26.5313 	DATA 	Mouse:  Left button up, pos=(916,517)
+26.5501 	EXP 	intensity_slider: markerPos = 6.237142860889435
+26.5890 	EXP 	intensity_slider: markerPos = 6.0
+26.6280 	EXP 	intensity_img: autoDraw = True
+27.1599 	DATA 	Mouse: Left button down, pos=(1079,346)
+27.2193 	DATA 	Mouse:  Left button up, pos=(1079,346)
+27.6469 	DATA 	Mouse: Left button down, pos=(990,392)
+27.6528 	EXP 	New trial (rep=0, index=1): {'file': '55_fs_1.mp4', 'id': 55, 'emotion': 'happiness', 'elicitation': 'paused', 'clip': 1, 'h': 854, 'w': 480, 'genuine': 'n'}
+27.6540 	EXP 	window1: mouseVisible = False
+27.6666 	EXP 	intensity_txt: autoDraw = False
+27.6666 	EXP 	intensity_slider: autoDraw = False
+27.6666 	EXP 	intensity_img: autoDraw = False
+27.6666 	EXP 	intensity_txt2: autoDraw = False
+27.6666 	EXP 	blackscreen_txt: autoDraw = True
+27.7013 	DATA 	Mouse:  Left button up, pos=(990,392)
+30.6550 	EXP 	window1: mouseVisible = False
+30.6559 	EXP 	Created trial_mp4 = MovieStim3(__class__=<class 'psychopy.visual.movie3.MovieStim3'>, anchor=('center', 'center'), autoLog=True, color=UNKNOWN, colorSpace=UNKNOWN, depth=-1.0, filename='PEDFE/edited/55_fs_1.mp4', flipHoriz=False, flipVert=False, fps=UNKNOWN, interpolate=True, loop=False, name='trial_mp4', noAudio=True, opacity=1, ori=method-wrapper(...), pos=array([0., 0.]), size=None, units='pix', vframe_callback=UNKNOWN, volume=UNKNOWN, win=Window(...))
+30.8173 	WARNING 	0.16130362100011553: Video catchup needed, advancing self._nextFrameT from 0.0 to 0.03273322422258593
+30.8173 	WARNING 	0.16138586200031568: Video catchup needed, advancing self._nextFrameT from 0.03273322422258593 to 0.06546644844517185
+30.8173 	WARNING 	0.16140599400023348: Video catchup needed, advancing self._nextFrameT from 0.06546644844517185 to 0.09819967266775778
+30.8543 	EXP 	blackscreen_txt: autoDraw = False
+30.8543 	EXP 	trial_mp4: autoLog = True
+30.8543 	EXP 	trial_mp4: movie = 'PEDFE/edited/55_fs_1.mp4'
+30.8543 	EXP 	trial_mp4: ori = 0.0
+30.8543 	EXP 	trial_mp4: autoDraw = True
+31.9516 	DATA 	Keypress: b
+33.0493 	DATA 	Keypress: n
+33.3758 	EXP 	Set trial_mp4 finished
+33.3771 	EXP 	window1: mouseVisible = True
+33.3861 	EXP 	trial_mp4: autoDraw = False
+33.3861 	EXP 	gesino_txt: autoDraw = True
+34.9243 	DATA 	Keypress: n
+34.9508 	EXP 	gesino_txt: autoDraw = False
+34.9508 	EXP 	genuine_slider: markerPos = 0
+34.9508 	EXP 	genuine_slider: markerPos = None
+34.9508 	EXP 	genuine_txt: autoDraw = True
+34.9508 	EXP 	genuine_slider: autoDraw = True
+34.9508 	EXP 	genuine_txt2: autoDraw = True
+36.5525 	DATA 	Mouse: Left button down, pos=(903,514)
+36.5878 	EXP 	genuine_slider: markerPos = 1.7684210131042875
+36.6169 	EXP 	genuine_slider: markerPos = 1.7684210131042875
+36.6406 	DATA 	Mouse:  Left button up, pos=(903,514)
+36.6471 	EXP 	genuine_slider: markerPos = 1.7684210131042875
+36.6754 	EXP 	genuine_slider: markerPos = 2.0
+36.7012 	EXP 	genuine_img: autoDraw = True
+37.7983 	DATA 	Mouse: Left button down, pos=(1059,384)
+37.8201 	EXP 	genuine_txt: autoDraw = False
+37.8201 	EXP 	genuine_slider: autoDraw = False
+37.8201 	EXP 	genuine_img: autoDraw = False
+37.8201 	EXP 	genuine_txt2: autoDraw = False
+37.8201 	EXP 	emotion_txt: autoDraw = True
+37.8201 	EXP 	fear: autoDraw = True
+37.8201 	EXP 	anger: autoDraw = True
+37.8201 	EXP 	happiness: autoDraw = True
+37.8684 	DATA 	Mouse:  Left button up, pos=(1059,384)
+38.3997 	DATA 	Mouse: Left button down, pos=(840,510)
+38.4421 	EXP 	emotion_txt: autoDraw = False
+38.4421 	EXP 	fear: autoDraw = False
+38.4421 	EXP 	anger: autoDraw = False
+38.4421 	EXP 	happiness: autoDraw = False
+38.4421 	EXP 	intensity_slider: markerPos = 0
+38.4421 	EXP 	intensity_slider: markerPos = None
+38.4421 	EXP 	intensity_txt: autoDraw = True
+38.4421 	EXP 	intensity_slider: autoDraw = True
+38.4421 	EXP 	intensity_txt2: autoDraw = True
+38.4859 	DATA 	Mouse:  Left button up, pos=(840,510)
+39.2337 	DATA 	Mouse: Left button down, pos=(903,519)
+39.2602 	EXP 	intensity_slider: markerPos = 5.939999967813492
+39.2886 	EXP 	intensity_slider: markerPos = 5.939999967813492
+39.3172 	EXP 	intensity_slider: markerPos = 5.939999967813492
+39.3194 	DATA 	Mouse:  Left button up, pos=(903,519)
+39.3460 	EXP 	intensity_slider: markerPos = 6.0
+39.3712 	EXP 	intensity_img: autoDraw = True
+39.7721 	DATA 	Mouse: Left button down, pos=(977,396)
+39.8484 	DATA 	Mouse:  Left button up, pos=(977,396)
+40.3064 	DATA 	Mouse: Left button down, pos=(1038,382)
+40.3181 	EXP 	New trial (rep=0, index=2): {'file': '22_fs_1.mp4', 'id': 22, 'emotion': 'happiness', 'elicitation': 'paused', 'clip': 1, 'h': 854, 'w': 480, 'genuine': 'n'}
+40.3196 	EXP 	window1: mouseVisible = False
+40.3269 	EXP 	intensity_txt: autoDraw = False
+40.3269 	EXP 	intensity_slider: autoDraw = False
+40.3269 	EXP 	intensity_img: autoDraw = False
+40.3269 	EXP 	intensity_txt2: autoDraw = False
+40.3269 	EXP 	blackscreen_txt: autoDraw = True
+40.3661 	DATA 	Mouse:  Left button up, pos=(1038,382)
+42.8884 	EXP 	window1: mouseVisible = True
