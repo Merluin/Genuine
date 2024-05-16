@@ -20,6 +20,6 @@ The Psychopy folder will contain the experiment files for the Genuine experiment
 
 ## Contact
 
-For any questions or inquiries regarding the analyses or experiment, feel free to contact [your_email@example.com](mailto:thomas.quettier2@unibo.it).
+For any questions or inquiries regarding the analyses or experiment, feel free to contact [thomas.quettier@unibo.it](mailto:thomas.quettier2@unibo.it).
 
 
