@@ -6,7 +6,7 @@ bin-release/
 
 # Other files and folders
 .settings/
-Genuine/01.experiment/
+01.experiment/
 Stimuli_validation/
 original_data/
 DatiGenuine/
