@@ -7,10 +7,10 @@ bin-release/
 # Other files and folders
 .settings/
 01.experiment/
-Stimuli_validation/
-original_data/
-DatiGenuine/
-archives/
+02.data/Stimuli_validation/
+02.data/genuine/original_data/
+02.data/genuine/DatiGenuine/
+02.data/genuine/archives/
 # Executables
 *.swf
 *.air
