@@ -1,4 +1,4 @@
-# Genuine Experiment Statistical Analysis
+# Genuine Statistical Analysis
 
 This repository contains statistical analyses conducted on data from the Genuine experiment. The analyses are performed using R programming language. Currently, all statistical scripts and related files are stored in the R folder. Additionally, a Psychopy folder with the experiment files will be pushed later.
 
