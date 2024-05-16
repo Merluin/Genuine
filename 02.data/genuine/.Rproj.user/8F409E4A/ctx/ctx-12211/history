@@ -1,0 +1,512 @@
+# Correct Rejections: Correctly identifying non-genuine emotions (genuine no response when the emotion is not genuinely displayed).
+# HR = Hits / (Hits + Misses)
+# FAR = False Alarms / (False Alarms + Correct Rejections)
+# d' = Z(HR) - Z(FAR), where Z() is the z-score transformation.
+# c = -0.5 * [Z(HR) + Z(FAR)], which represents the response bias.
+# Calculating hits, misses, false alarms, and correct rejections
+data_genuine <- dataset %>%
+SliderGenuineDetection() %>%
+mutate(Session = as.factor(session),
+Emotion = as.factor(emotion),
+Group = as.factor(group),
+Participant = participant)
+# ,
+# HR = abs(Hits)/( abs(Hits)+abs(Misses) ),
+# FAR = abs(False.Alarms)/( abs(False.Alarms)+abs(Correct.Rejections) ))
+#write.csv(data_genuine, "data/signaldetection.csv", row.names=FALSE)
+# Model Fitting
+anova_hits <- aov_ez("participant", "Hits", data_genuine, within = c("Emotion","Session"), between = "Group")
+posthoc_d <- emmeans(anova_hits, pairwise ~ Emotion)
+anova_misses <- aov_ez("participant", "Misses", data_genuine, within = c("Emotion","Session"), between = "Group")
+anova_cr <- aov_ez("participant", "Correct.Rejections", data_genuine, within = c("Emotion","Session"), between = "Group")
+anova_fa <- aov_ez("participant", "False.Alarms", data_genuine, within = c("Emotion","Session"), between = "Group")
+anova_hits <- aov_ez("participant", "Hits", data_genuine, within = c("Emotion","Session"), between = "Group")
+anova_hits
+# Calculating hits, misses, false alarms, and correct rejections
+data_genuine <- dataset %>%
+SliderGenuineDetection() %>%
+mutate(Session = as.factor(session),
+Emotion = as.factor(emotion),
+Group = as.factor(group),
+Participant = participant,
+Hits = abs(Hits))
+anova_hits <- aov_ez("participant", "Hits", data_genuine, within = c("Emotion","Session"), between = "Group")
+anova_hits
+posthoc_d <- emmeans(anova_hits, pairwise ~ Emotion)
+posthoc_d
+anova_misses <- aov_ez("participant", "Misses", data_genuine, within = c("Emotion","Session"), between = "Group")
+anova_cr <- aov_ez("participant", "Correct.Rejections", data_genuine, within = c("Emotion","Session"), between = "Group")
+anova_cr
+dataset %>%
+SliderGenuineDetection() %>%
+mutate(Session = as.factor(session),
+Emotion = as.factor(emotion),
+Group = as.factor(group),
+Participant = participant)
+dataset %>%
+SliderGenuineDetection()
+dataset %>%
+SliderGenuineDetection() %>%
+gather( "sdt", "score", c(5:8))
+anova_hits <- aov_ez("participant", "Hits", data_genuine, within = c("emotion","session"), between = "group")
+anova_hits
+dataAnova <- data_genuine %>%
+gather( "sdt", "score", c(5:8)) %>%
+mutate( score = abs(score)) %>%
+filter( sdt %in% sdtitems)
+sdtitems <- c("Hits","Correct.Rejections")
+dataAnova <- data_genuine %>%
+gather( "sdt", "score", c(5:8)) %>%
+mutate( score = abs(score)) %>%
+filter( sdt %in% sdtitems)
+dataAnova
+anova <- aov_ez("participant", "False.Alarms", dataAnova, within = c("emotion","session"), between = "group")
+anova <- aov_ez("participant", "False.Alarms", dataAnova, within = c("emotion","session","sdt"), between = "group")
+anova <- aov_ez("participant", "score", dataAnova, within = c("emotion","session","sdt"), between = "group")
+anova
+posthoc <- emmeans(anova, pairwise ~ emotion|sdt)
+posthoc
+emmeans(anova, pairwise ~ sdt|emotion)
+dataset
+View(dataset)
+# Clearing workspace
+rm(list=ls()) # Clear the existing workspace to avoid conflicts
+# Load dependencies
+devtools::load_all() # Load necessary functions and packages
+# replace_csv("session",003) pt 5 session 3 was set to 1
+# Data loading
+load("data/dataset.RData")
+summary_participants <- dataset %>%
+group_by( participant, emotion, elicitation, session, group) %>%
+summarize_data()
+View(summary_participants)
+anova_acc_genuine <- aov_ez("participant", "genuine.acc.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_acc_genuine
+posthoc <- emmeans(anova_hits, pairwise ~ emotion|session)
+posthoc <- emmeans(anova_acc_genuine, pairwise ~ emotion|session)
+posthoc
+posthoc <- emmeans(anova_acc_genuine, pairwise ~ session|emotion)
+posthoc
+?emmeans
+posthoc <- emmeans(anova_acc_genuine, pairwise ~ session|emotion, adjust = "bonferoni")
+posthoc
+plot(posthoc, comparisons = TRUE)
+posthoc <- emmeans(anova_acc_genuine, pairwise ~ session|emotion, adjust = "bonferroni")
+posthoc
+anova_acc_genuine <- aov_ez("participant", "emotion.acc.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_acc_genuine
+posthoc <- emmeans(anova_acc_emotion, pairwise ~ elicitation, adjust = "bonferroni")
+anova_acc_emotion <- aov_ez("participant", "genuine.acc.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+posthoc <- emmeans(anova_acc_emotion, pairwise ~ elicitation, adjust = "bonferroni")
+posthoc
+posthoc <- emmeans(anova_acc_emotion, pairwise ~ elicitation)
+posthoc
+anova_acc_emotion <- aov_ez("participant", "genuine.acc.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_acc_emotion
+anova_acc_genuine <- aov_ez("participant", "genuine.acc.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_acc_genuine
+anova_acc_emotion <- aov_ez("participant", "emotion.acc.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_acc_emotion
+posthoc <- emmeans(anova_acc_emotion, pairwise ~ elicitation)
+posthoc
+plot(main, comparisons = TRUE)
+main <- emmeans(anova_acc_emotion, pairwise ~ elicitation)
+plot(main, comparisons = TRUE)
+posthoc <- emmeans(anova_acc_emotion, pairwise ~ session|emotion, adjust = "bonferroni")
+posthoc
+posthoc <- emmeans(anova_acc_emotion, pairwise ~ emotion|session, adjust = "bonferroni")
+posthoc
+posthoc <- emmeans(anova_acc_emotion, pairwise ~ session|emotion, adjust = "bonferroni")
+plot(posthoc, comparisons = TRUE)
+anova_rt_emotion <- aov_ez("participant", "emotion.rt1.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_rt_emotion <- aov_ez("participant", "genuine.rt1.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_rt_genuine <- aov_ez("participant", "genuine.rt1.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_rt_genuine
+main_emotion <- emmeans(anova_rt_genuine, pairwise ~ emotion)
+plot(main_emotion, comparisons = TRUE)
+main_emotion
+main_elicitation <- emmeans(anova_rt_genuine, pairwise ~ elicitation)
+plot(main_elicitation, comparisons = TRUE)
+main_elicitation
+anova_rt_genuine
+posthoc <- emmeans(anova_rt_genuine, pairwise ~ elicitation|emotion, adjust = "bonferroni")
+plot(posthoc, comparisons = TRUE)
+posthoc
+anova_acc_genuine <- aov_ez("participant", "genuine.acc.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_acc_genuine
+posthoc <- emmeans(anova_acc_genuine, pairwise ~ session|emotion, adjust = "bonferroni")
+plot(posthoc, comparisons = TRUE)
+posthoc <- emmeans(anova_rt_genuine, pairwise ~ elicitation|emotion, adjust = "bonferroni")
+plot(posthoc, comparisons = TRUE)
+anova_slider_genuine <- aov_ez("participant", "genuine.slider1.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_slider_genuine
+main_emotion <- emmeans(anova_slider_genuine, pairwise ~ emotion)
+plot(main_emotion, comparisons = TRUE)
+main_emotion
+# Perform data summarization for this participant
+summary_participants <- dataset %>%
+group_by( participant, emotion, elicitation, session, group) %>%
+summarize_data() %>%
+mutate(slider = abs(genuine.slider1.mean))
+anova_slider_genuine <- aov_ez("participant", "slider", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_slider_genuine
+posthoc <- emmeans(anova_slider_genuine, pairwise ~ elicitation|emotion, adjust = "bonferroni")
+plot(posthoc, comparisons = TRUE)
+posthoc
+anova_slider_emotion <- aov_ez("participant", "emotion.slider1.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_slider_emotion
+main <- emmeans(anova_slider_emotion, pairwise ~ emotion)
+plot(main, comparisons = TRUE)
+main
+posthoc1 <- emmeans(anova_slider_emotion, pairwise ~ elicitation|emotion, adjust = "bonferroni")
+plot(posthoc1, comparisons = TRUE)
+posthoc1
+posthoc1 <- emmeans(anova_slider_emotion, pairwise ~ emotion|elicitation, adjust = "bonferroni")
+plot(posthoc1, comparisons = TRUE)
+posthoc2 <- emmeans(anova_slider_emotion, pairwise ~ group|emotion|elicitation|session, adjust = "bonferroni")
+posthoc2
+posthoc2 <- emmeans(anova_slider_emotion, pairwise ~ session|group|emotion|elicitation, adjust = "bonferroni")
+posthoc2
+plot(posthoc2, comparisons = TRUE)
+posthoc <- emmeans(anova_acc_emotion, pairwise ~ session|emotion, adjust = "bonferroni")
+plot(posthoc, comparisons = TRUE)
+posthoc
+anova_acc_emotion
+posthoc <- emmeans(anova_acc_emotion, pairwise ~ emotion|session, adjust = "bonferroni")
+posthoc
+anova_slider_genuine <- aov_ez("participant", "slider", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+posthoc <- emmeans(anova_slider_genuine, pairwise ~ elicitation|emotion, adjust = "bonferroni")
+plot(posthoc, comparisons = TRUE)
+posthoc
+anova_rt_genuine <- aov_ez("participant", "genuine.rt1.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+posthoc <- emmeans(anova_rt_genuine, pairwise ~ elicitation|emotion, adjust = "bonferroni")
+plot(posthoc, comparisons = TRUE)
+posthoc
+anova_acc_genuine <- aov_ez("participant", "genuine.acc.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+posthoc <- emmeans(anova_acc_genuine, pairwise ~ session|emotion, adjust = "bonferroni")
+plot(posthoc, comparisons = TRUE)
+posthoc
+anova_acc_genuine
+# Perform data summarization for this participant
+summary_participants <- dataset %>%
+group_by( participant, emotion, elicitation, session, group) %>%
+summarize_data() %>%
+mutate(slider = abs(genuine.slider1.mean),
+IES = genuine.rt1.mean/genuine.acc.mean)
+anova_IES <- aov_ez("participant", "IES", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_IES
+View(summary_participants)
+table(summary_participants$group)
+knitr::opts_chunk$set(echo = TRUE)
+unique(summary_participants$participant)
+pts <- summary_participants %>%
+group_by(participant) %>%
+mutate(n = count())
+pts <- summary_participants %>%
+group_by(participant) %>%
+sumarise(n = count())
+pts <- summary_participants %>%
+group_by(participant) %>%
+summarise(n = count())
+pts <- summary_participants %>%
+group_by(participant) %>%
+summarise(n = n())
+pts
+pts <- summary_participants %>%
+group_by(group) %>%
+summarise(n = n())
+pts
+pts <- summary_participants %>%
+group_by(group) %>%
+summarise(n = n_distinct(participant))
+pts
+anova_slider_emotion <- aov_ez("participant", "emotion.slider1.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+main <- emmeans(anova_slider_emotion, pairwise ~ emotion)
+plot(main, comparisons = TRUE)
+posthoc1 <- emmeans(anova_slider_emotion, pairwise ~ emotion|elicitation, adjust = "bonferroni")
+plot(posthoc1, comparisons = TRUE)
+posthoc2 <- emmeans(anova_slider_emotion, pairwise ~ session|group|emotion|elicitation, adjust = "bonferroni")
+plot(posthoc2, comparisons = TRUE)
+# Perform data summarization for this participant
+summary_participants <- dataset %>%
+group_by( participant, emotion, elicitation, session, group) %>%
+summarize_data() %>%
+mutate(slider = abs(genuine.slider1.mean),
+IES = genuine.rt1.mean/genuine.acc.mean) %>%
+filter(session != 2)
+###########################################################################
+#
+#  Experiment:  GENUINE
+#  Programmer:  QUETTIER THOMAS
+#  Date:        05/03/2024
+#  Description: Pilot signal detection
+#
+#  Update:      05/03/2024
+###########################################################################
+# Clearing workspace
+rm(list=ls()) # Clear the existing workspace to avoid conflicts
+# Load dependencies
+devtools::load_all() # Load necessary functions and packages
+# replace_csv("session",003) pt 5 session 3 was set to 1
+# Data loading
+load("data/dataset.RData")
+# Perform data summarization for this participant
+summary_participants <- dataset %>%
+group_by( participant, emotion, elicitation, session, group) %>%
+summarize_data() %>%
+mutate(slider = abs(genuine.slider1.mean),
+IES = genuine.rt1.mean/genuine.acc.mean) %>%
+filter(session != 2)
+anova_acc_genuine <- aov_ez("participant", "genuine.acc.mean", summary_participants, within = c("emotion","session","elicitation"), between = "group")
+anova_acc_genuine
+posthoc <- emmeans(anova_acc_genuine, pairwise ~ group|session|emotion, adjust = "bonferroni")
+posthoc
+plot(posthoc, comparisons = TRUE)
+posthoc <- emmeans(anova_acc_genuine, pairwise ~ session|group|emotion, adjust = "bonferroni")
+plot(posthoc, comparisons = TRUE)
+posthoc
+###########################################################################
+#
+#  Experiment:  GENUINE
+#  Programmer:  QUETTIER THOMAS
+#  Date:        23/01/2024
+#  Description: Pilot accuracy subject table
+#
+#  Update:      23/01/2024
+###########################################################################
+# Clearing workspace
+rm(list=ls()) # Clear the existing workspace to avoid conflicts
+# Load dependencies
+devtools::load_all() # Load necessary functions and packages
+# replace_csv("session",003) pt 5 session 3 was set to 1
+# Data loading
+dataset_concatenation("dataset")
+load("data/dataset.RData")
+# Count participants and clips
+n <- length(unique(dataset$participant)) # Calculate the number of unique participants
+# Assign participants to groups based on control group membership
+control_group <- c(6,7,8,9,10) # Define which participant IDs are in the control group
+# Prepare the dataset for analysis
+dataset <- dataset %>%
+mutate(ccPAS = ifelse(participant %in% control_group,"STS_IFG", "IFG_STS"),
+group = ifelse(participant %in% control_group,"Control", "Experimental")) %>%
+filter(Trials_loop.thisRepN == 0)
+# Saving on objects in RData format
+save(dataset,
+file = "data/dataset.RData")
+# Clearing workspace
+rm(list=ls()) # Clear the existing workspace to avoid conflicts
+# Load dependencies
+devtools::load_all() # Load necessary functions and packages
+# replace_csv("session",003) pt 5 session 3 was set to 1
+# Data loading
+load("data/dataset.RData")
+n <- length(unique(dataset$participant))
+n
+data <- dataset
+for(i in 1:n){
+pts <- i
+n_clips <- length(unique(dataset$file))-1
+dataset <- data %>%
+filter(participant == pts)
+# Data summarization for participants
+summary_participants <- dataset %>%
+filter(Trials_loop.thisRepN == 0) %>%
+group_by( participant, emotion, elicitation, session) %>%
+summarise(
+genuine.acc.mean = mean(gesino_kb.corr, na.rm = TRUE),
+genuine.acc.sd = sd(gesino_kb.corr, na.rm = TRUE),
+genuine.rt.mean = mean(gesino_kb.rt, na.rm = TRUE),
+genuine.rt.sd = sd(gesino_kb.rt, na.rm = TRUE),
+genuine.slider1.mean = mean(genuine_slider.response[gesino_kb.corr == 1], na.rm = TRUE),
+genuine.slider1.sd = sd(genuine_slider.response[gesino_kb.corr == 1], na.rm = TRUE),
+genuine.slider0.mean = mean(genuine_slider.response[gesino_kb.corr == 0], na.rm = TRUE),
+genuine.slider0.sd = sd(genuine_slider.response[gesino_kb.corr == 0], na.rm = TRUE),
+emotion.acc.mean = mean(accuracy, na.rm = TRUE),
+emotion.acc.sd = sd(accuracy, na.rm = TRUE),
+emotion.slider1.mean = mean(intensity_slider.response[accuracy == 1], na.rm = TRUE),
+emotion.slider1.sd = sd(intensity_slider.response[accuracy == 1], na.rm = TRUE),
+emotion.slider0.mean = mean(intensity_slider.response[accuracy == 0], na.rm = TRUE),
+emotion.slider0.sd = sd(intensity_slider.response[accuracy == 0], na.rm = TRUE)
+) %>%
+ungroup()
+# Data summarization for emotions
+summary_emotion <- summary_participants %>%
+mutate(elicitation = "Total") %>%
+group_by( emotion,elicitation, session) %>%
+summarise(
+genuine.acc.sd = sd(genuine.acc.mean, na.rm = TRUE),
+genuine.acc.mean = mean(genuine.acc.mean, na.rm = TRUE),
+genuine.rt.sd = sd(genuine.rt.mean, na.rm = TRUE),
+genuine.rt.mean = mean(genuine.rt.mean, na.rm = TRUE),
+genuine.slider1.sd = sd(genuine.slider1.mean, na.rm = TRUE),
+genuine.slider1.mean = mean(genuine.slider1.mean, na.rm = TRUE),
+genuine.slider0.sd = sd(genuine.slider0.mean, na.rm = TRUE),
+genuine.slider0.mean = mean(genuine.slider0.mean, na.rm = TRUE),
+emotion.acc.sd = sd(emotion.acc.mean, na.rm = TRUE),
+emotion.acc.mean = mean(emotion.acc.mean, na.rm = TRUE),
+emotion.slider1.sd = sd(emotion.slider1.mean, na.rm = TRUE),
+emotion.slider1.mean = mean(emotion.slider1.mean, na.rm = TRUE),
+emotion.slider0.sd = sd(emotion.slider0.mean, na.rm = TRUE),
+emotion.slider0.mean = mean(emotion.slider0.mean, na.rm = TRUE)
+) %>%
+ungroup() %>%
+mutate(across(where(is.numeric), round, digits = 2))
+# Data summarization for emotion and elicitation
+summary_tot <- summary_participants %>%
+group_by( emotion, session, elicitation) %>%
+summarise(
+genuine.acc.sd = sd(genuine.acc.mean, na.rm = TRUE),
+genuine.acc.mean = mean(genuine.acc.mean, na.rm = TRUE),
+genuine.rt.sd = sd(genuine.rt.mean, na.rm = TRUE),
+genuine.rt.mean = mean(genuine.rt.mean, na.rm = TRUE),
+genuine.slider1.sd = sd(genuine.slider1.mean, na.rm = TRUE),
+genuine.slider1.mean = mean(genuine.slider1.mean, na.rm = TRUE),
+genuine.slider0.sd = sd(genuine.slider0.mean, na.rm = TRUE),
+genuine.slider0.mean = mean(genuine.slider0.mean, na.rm = TRUE),
+emotion.acc.sd = sd(emotion.acc.mean, na.rm = TRUE),
+emotion.acc.mean = mean(emotion.acc.mean, na.rm = TRUE),
+emotion.slider1.sd = sd(emotion.slider1.mean, na.rm = TRUE),
+emotion.slider1.mean = mean(emotion.slider1.mean, na.rm = TRUE),
+emotion.slider0.sd = sd(emotion.slider0.mean, na.rm = TRUE),
+emotion.slider0.mean = mean(emotion.slider0.mean, na.rm = TRUE)
+) %>%
+ungroup() %>%
+mutate(across(where(is.numeric), round, digits = 2))
+# Combine summaries
+final_dataset <- rbind( summary_tot[c(1,2),], # Combine various summaries into final dataset to have Total
+summary_emotion[1,],
+summary_tot[c(3,4),],
+summary_emotion[2,],
+summary_tot[c(5,6),],
+summary_emotion[3,],
+summary_tot[c(7,8),], # Combine various summaries into final dataset to have Total
+summary_emotion[4,],
+summary_tot[c(9,10),],
+summary_emotion[5,],
+summary_tot[c(11,12),],
+summary_emotion[6,],
+summary_tot[c(13,14),], # Combine various summaries into final dataset to have Total
+summary_emotion[7,],
+summary_tot[c(15,16),],
+summary_emotion[8,],
+summary_tot[c(17,18),],
+summary_emotion[9,]) %>%
+mutate(across(where(is.numeric), round, digits = 2)) %>%
+select(c("emotion", "session", "elicitation",
+"genuine.acc.mean", "genuine.acc.sd",
+"genuine.rt.mean", "genuine.rt.sd",
+"genuine.slider1.mean", "genuine.slider1.sd",
+"genuine.slider0.mean", "genuine.slider0.sd",
+"emotion.acc.mean", "emotion.acc.sd",
+"emotion.slider1.mean", "emotion.slider1.sd",
+"emotion.slider0.mean", "emotion.slider0.sd"))
+#save data.frame
+write.xlsx(final_dataset, paste0("objects/summary_subjects_",pts,".xlsx"))
+table_tot <- final_dataset %>%
+mutate(genuine.acc = ifelse(is.na(genuine.acc.mean) ,"",
+ifelse(is.na(genuine.acc.sd)|genuine.acc.sd == 0,paste(genuine.acc.mean),
+paste(genuine.acc.mean, "±", genuine.acc.sd))),
+genuine.rt = ifelse(is.na(genuine.rt.mean) ,"",
+ifelse(is.na(genuine.rt.sd)|genuine.rt.sd == 0,paste(genuine.rt.mean),
+paste(genuine.rt.mean, "±", genuine.rt.sd))),
+genuine.slider1 = ifelse(is.na(genuine.slider1.mean) ,"",
+ifelse(is.na(genuine.slider1.sd)|genuine.slider1.sd == 0,paste(genuine.slider1.mean),
+paste(genuine.slider1.mean, "±", genuine.slider1.sd))),
+genuine.slider0 = ifelse(is.na(genuine.slider0.mean) ,"",
+ifelse(is.na(genuine.slider0.sd)|genuine.slider0.sd == 0,paste(genuine.slider0.mean),
+paste(genuine.slider0.mean, "±", genuine.slider0.sd))),
+emotion.acc = ifelse(is.na(emotion.acc.mean) ,"",
+ifelse(is.na(emotion.acc.sd)|emotion.acc.sd == 0,paste(emotion.acc.mean),
+paste(emotion.acc.mean, "±", emotion.acc.sd))),
+emotion.slider1 = ifelse(is.na(emotion.slider1.mean) ,"",
+ifelse(is.na(emotion.slider1.sd)|emotion.slider1.sd == 0,paste(emotion.slider1.mean),
+paste(emotion.slider1.mean, "±", emotion.slider1.sd))),
+emotion.slider0 = ifelse(is.na(emotion.slider0.mean) ,"",
+ifelse(is.na(emotion.slider0.sd)|emotion.slider0.sd == 0,paste(emotion.slider0.mean),
+paste(emotion.slider0.mean, "±", emotion.slider0.sd)))) %>%
+select(emotion,session,elicitation,
+genuine.acc,genuine.rt,genuine.slider1,genuine.slider0,
+emotion.acc,emotion.slider1,emotion.slider0)
+# Create and format the flextable
+table <- table_tot%>%
+flextable() %>%
+autofit() %>%
+theme_vanilla() %>%
+fontsize(part = "all", size = 7)%>%
+set_header_labels(values = list(
+emotion = "Emotion",
+session = "Session",
+elicitation = "Elicitation",
+file = "Mp4",
+genuine.acc = "Accuracy",
+genuine.rt = " Rt ",
+emotion.acc = "Accuracy",
+genuine.slider1 = "Slider correct",
+genuine.slider0 = "Slider incorrect",
+emotion.slider1 = "Slider correct",
+emotion.slider0 = "Slider incorrect")) %>%
+add_header_row(values = c(paste("Pts =",pts),"","", "Genuine", "Genuine","Genuine", "Genuine",
+"Emotion","Emotion","Emotion")) %>%
+merge_v(j = c(1:3)) %>%
+merge_h(part = "header") %>%
+align(align = "center", part = "all") %>%
+width(j = 1:10, width = .8) %>%
+bold( part = "body", i = c(3, 6, 9,12,15,18,21,24,27), bold = TRUE) %>%
+set_caption("Summary Participant")
+# Printing the table for preview
+table
+# Creating a Word document with the table
+doc <- officer::read_docx()
+doc <- body_add_flextable(doc, value = table)
+#doc <- doc %>% officer::body_end_section_landscape()
+# doc <- body_add_par(doc, value = "", style = "Normal") %>%
+#   slip_in_section(landscape = TRUE, page_size = officer::page_size(orient = "landscape"))
+print(doc, target = paste0("objects/summary_subjects_",pts,".docx"))
+}
+read_acq <- function(acq_files, hdf5_output_dir=NULL, keep_hdf5=TRUE, acq2hdf5_location=NULL, ...) {
+sapply(acq_files, assert_file_exists)
+if (!keep_hdf5) {
+hdf5_output_dir <- tempdir()  #output txts to temporary directory
+} else {
+if (!is.null(hdf5_output_dir) && !dir.exists(hdf5_output_dir)) { dir.create(hdf5_output_dir) } #create output directory for TXT files if requested
+}
+hdf5_files <- acq2hdf5(acq_files, acq2hdf5_location=acq2hdf5_location)
+#pass additional arguments such as parse_all to read.asc
+res <- lapply(1:length(hdf5_files), function(ff) {
+physio_data <- list(raw=biopac_hdf5_to_dataframe(hdf5file=hdf5_files[ff], ...), hdf5_file=hdf5_files[ff], acq_file=acq_files[ff])
+physio_data$sampling_rate <- attr(physio_data$raw, "sampling_rate") #promote to metadata
+physio_data$max_channel_rate <- attr(physio_data$raw, "max_channel_rate") #promote to metadata
+class(physio_data) <- c("list", "ep.physio") #add ep.physio class
+return(physio_data)
+})
+if (!keep_hdf5) { file.remove(hdf5_files) } #cleanup hdf5 files if requested
+names(res) <- basename(acq_files)
+return(res)
+}
+read_acq("~/Exp SST_ccPAS/Output MEP/ANALIZZATI/SMA/07FM_ccPAS.acq")
+read_acq("data/SMA/07FM_ccPAS.acq")
+read_acq("data/07FM_ccPAS.acq")
+x<-read_acq("data/07FM_ccPAS.acq")
+read_acq <- function(acq_files, hdf5_output_dir=NULL, keep_hdf5=TRUE, acq2hdf5_location=NULL, ...) {
+if (!keep_hdf5) {
+hdf5_output_dir <- tempdir()  #output txts to temporary directory
+} else {
+if (!is.null(hdf5_output_dir) && !dir.exists(hdf5_output_dir)) { dir.create(hdf5_output_dir) } #create output directory for TXT files if requested
+}
+hdf5_files <- acq2hdf5(acq_files, acq2hdf5_location=acq2hdf5_location)
+#pass additional arguments such as parse_all to read.asc
+res <- lapply(1:length(hdf5_files), function(ff) {
+physio_data <- list(raw=biopac_hdf5_to_dataframe(hdf5file=hdf5_files[ff], ...), hdf5_file=hdf5_files[ff], acq_file=acq_files[ff])
+physio_data$sampling_rate <- attr(physio_data$raw, "sampling_rate") #promote to metadata
+physio_data$max_channel_rate <- attr(physio_data$raw, "max_channel_rate") #promote to metadata
+class(physio_data) <- c("list", "ep.physio") #add ep.physio class
+return(physio_data)
+})
+if (!keep_hdf5) { file.remove(hdf5_files) } #cleanup hdf5 files if requested
+names(res) <- basename(acq_files)
+return(res)
+}
+x<-read_acq("data/07FM_ccPAS.acq")
+install.packages("remotes")
+remotes::install_github("PennStateDEPENdLab/experiment_pipeline")

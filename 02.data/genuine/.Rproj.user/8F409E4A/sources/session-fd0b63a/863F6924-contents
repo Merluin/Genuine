@@ -1,0 +1,45 @@
+###########################################################################
+#
+#  Experiment:  GENUINE
+#  Programmer:  QUETTIER THOMAS
+#  Date:        23/01/2024
+#  Description: Pilot accuracy subject table
+#
+#  Update:      23/01/2024
+###########################################################################
+
+# Clearing workspace
+rm(list=ls()) # Clear the existing workspace to avoid conflicts
+
+
+# Load dependencies
+devtools::load_all() # Load necessary functions and packages
+#replace_csv("participant",37) 
+
+# Data loading
+dataset_concatenation("dataset")
+load("data/dataset.RData") 
+
+# Count participants and clips
+n <- length(unique(dataset$participant)) # Calculate the number of unique participants
+#replace_csv("session",2)
+
+# Assign participants to groups based on control group membership
+treatment_group <- c(1,2,3,4,5,11,12,13,14,17,19,22,25,26,27,37) # 11, 19
+control_group <- c(6,7,8,9,10,15,16,18,20,21,23,24,28,29,30) # 8,30
+m1_group <- c(31,32,33,34,35,36)
+
+# Prepare the dataset for analysis
+dataset <- dataset %>%
+  mutate(ccPAS = ifelse(participant %in% control_group,"STS_IFG", 
+                        ifelse(participant %in% m1_group,"M1_IFG", "IFG_STS")),
+         
+         
+         group = ifelse(participant %in% control_group,"Control", 
+                        ifelse(participant %in% m1_group,"M1","Experimental"))) %>%
+  filter(Trials_loop.thisRepN == 0)
+
+
+# Saving on objects in RData format
+save(dataset, 
+     file = "data/dataset.RData")
