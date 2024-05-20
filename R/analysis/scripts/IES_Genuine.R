@@ -54,62 +54,36 @@ contrasts(data$group) <- contr.sum(length(unique(data$group)))  # Sum coding for
 contrasts(data$emotion) <- contr.sum(length(unique(data$emotion)))  # Sum coding for emotion
 contrasts(data$session) <- contr.sum(length(unique(data$session)))  # Sum coding for session
 
-# # Define a custom contrast matrix for 3 levels
-# custom_contrasts <- matrix(c(
-#   2, -1, -1,  # Contrast 1: Pre-treatment vs. average of both post-treatments
-#   -1,  1,  0,  # Contrast 2: Post-treatment1 vs. Pre-treatment
-#   -1,  0,  1   # Contrast 3: Post-treatment2 vs. Pre-treatment
-# ), byrow = TRUE, nrow = 3)
-# # Name the rows and columns for clarity
-# rownames(custom_contrasts) <- c("Pre vs Post Avg", "Post1 vs Pre", "Post2 vs Pre")
-# colnames(custom_contrasts) <- levels(data$session)
-# # Assign the custom contrasts to the factor
-# contrasts(data$session) <- custom_contrasts
 
-
-# Fit various generalized linear mixed models (GLMMs)
+# Fit variousm linear mixed models (GLMMs)
 
 # Null model with only the intercept and random effect of subject
-fit0 <- glmer(scorep ~ 1 + (1|subject),           # Fixed and random effects
-              data = data,                        # Data frame containing variables
-              family = binomial(link = "logit"),  # Binomial family with logit link function
-              weights = nt)                       # Weights to account for number of trials
+fit0 <- lmer(scorep ~ 1 + (1|subject),           # Fixed and random effects
+              data = data)                       # Weights to account for number of trials
 
 # Model with group as a fixed effect
 fit1 <- glmer(scorep ~ group + (1|subject),
-              data = data,
-              family = binomial(link = "logit"),
-              weights = nt)
+              data = data)
 
 # Model with session as a fixed effect
 fit2 <- glmer(scorep ~ session + (1|subject),
-              data = data,
-              family = binomial(link = "logit"),
-              weights = nt)
+              data = data)
 
 # Model with emotion as a fixed effect
 fit3 <- glmer(scorep ~ emotion + (1|subject),
-              data = data,
-              family = binomial(link = "logit"),
-              weights = nt)
+              data = data)
 
 # Model with interaction between group and session
 fit4 <- glmer(scorep ~ group * session + (1|subject),
-              data = data,
-              family = binomial(link = "logit"),
-              weights = nt)
+              data = data)
 
 # Model with interaction between group and emotion
 fit5 <- glmer(scorep ~ group * emotion + (1|subject),
-              data = data,
-              family = binomial(link = "logit"),
-              weights = nt)
+              data = data)
 
 # Model with interaction between session, group, and emotion
-fit6 <- glmer(scorep ~ session * group * emotion + (1|subject),
-              data = data,
-              family = binomial(link = "logit"),
-              weights = nt)
+fit6 <- glmer(scorep ~  group * emotion * session + (1|subject),
+              data = data)
 
 # Compare the models using ANOVA
 anova(fit0, fit1, fit2, fit3, fit4, fit5, fit6)
@@ -159,26 +133,8 @@ car::Anova(fit, type = "III")
 
 # Calculate estimated marginal means (EMMs) and perform pairwise comparisons for the main effect of emotion
 # 'adjust = "bonf"' applies Bonferroni correction for multiple comparisons
-main_emotion <- emmeans(fit, pairwise ~ emotion, adjust = "bonf")
+main_session <- emmeans(fit, pairwise ~ session, adjust = "bonf")
 
-# Calculate estimated marginal means (EMMs) and perform pairwise comparisons for the interaction effect
-# of session within each group and emotion
-# 'adjust = "bonf"' applies Bonferroni correction for multiple comparisons
-inter_groupemotion <- emmeans(fit, pairwise ~ session | group | emotion, adjust = "bonf")
-
-# Optionally, additional pairwise comparisons (for thorough exploration)
-
-# Perform pairwise comparisons of group within each emotion and session
-inter_group <- emmeans(fit, pairwise ~ group | emotion | session, adjust = "bonf")
-
-# Perform pairwise comparisons of session within each emotion and group
-inter_session <- emmeans(fit, pairwise ~ session | emotion | group, adjust = "bonf")
-
-# Perform pairwise comparisons for the complete interaction of group, session, and emotion
-inter_complete <- emmeans(fit, pairwise ~ group * session * emotion, adjust = "bonf")
-
-# Note: The most relevant for your hypothesis is `inter_groupemotion`
-# which specifically checks differences in session (pre vs post) within each group and emotion.
 
 
 #################################################
