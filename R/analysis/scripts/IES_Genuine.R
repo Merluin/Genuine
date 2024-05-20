@@ -39,8 +39,8 @@ data <- dataset # Avoid overwriting existing object
 # Add a column for the number of trials
 data$nt <- 48  # Number of trials
 
-# Create an easy-to-use code for genuine accuracy
-data$scorep <- data$genuine.accuracy  # Assign genuine accuracy to scorep
+# Create an easy-to-use code for genuine ies
+data$scorep <- dataset$ies  # Assign ies to scorep
 
 # Convert variables to appropriate data types and set factors
 data <- data %>%

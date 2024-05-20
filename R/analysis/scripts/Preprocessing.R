@@ -61,7 +61,7 @@ final_dataset <- bind_rows(summary_emotion, summary_tot) %>%
 # prepare data for long format file
 long_format <-summary_emotion %>% 
   mutate(genuine.accuracy = genuine.acc.mean,
-          genuine.rt = genuine.rt.mean,
+          genuine.rt = genuine.rt1.mean,
           genuine.slider.correct = genuine.slider1.mean,
           genuine.slider.incorrect = genuine.slider0.mean,
           emotion.accuracy = emotion.acc.mean,

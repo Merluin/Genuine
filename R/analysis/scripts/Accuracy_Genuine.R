@@ -40,7 +40,7 @@ data <- dataset # Avoid overwriting existing object
 data$nt <- 48  # Number of trials
 
 # Create an easy-to-use code for genuine accuracy
-data$scorep <- data$genuine.accuracy  # Assign genuine accuracy to scorep
+data$scorep <- dataset$genuine.accuracy  # Assign genuine accuracy to scorep
 
 # Convert variables to appropriate data types and set factors
 data <- data %>%
