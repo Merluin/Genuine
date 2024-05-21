@@ -14,7 +14,7 @@ rm(list=ls()) # Clear the existing workspace to avoid conflicts
 
 # Load dependencies
 devtools::load_all() # Load necessary functions and packages
-#replace_csv("participant",37) # function to correct error in coding metadata from psychopy
+#replace_csv("session",2) # function to correct error in coding metadata from psychopy
 
 # Data loading
 dataset_concatenation("original_data","dataset") # aggregates all .csv files
@@ -26,8 +26,8 @@ n <- length(unique(dataset$participant)) # Calculate the number of unique partic
 
 # Assign participants to groups based on the chronological order of data collection
 treatment_group <- c(1,2,3,4,5,11,12,13,14,17,19,22,25,26,27,37)
-control_group <- c(6,7,8,9,10,15,16,18,20,21,23,24,28,29,30)
-m1_group <- c(31,32,33,34,35,36)
+control_group <- c(6,7,8,9,10,15,16,18,20,21,23,24,28,29,30,39)
+m1_group <- c(31,32,33,34,35,36,38,40)
 
 # Retain only experimental trials and create columns for the ccPAS protocol and group assignment
 dataset <- dataset %>%

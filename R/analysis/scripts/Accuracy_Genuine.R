@@ -18,13 +18,12 @@ devtools::load_all()  # Load necessary functions and packages
 dataset <- read_excel("data/accuracy_genuine_lf.xlsx", sheet = "Sheet 1") %>% 
   filter(session != 2, 
          subject != 8, subject != 11, subject != 19, 
-         subject != 30, subject != 31, subject != 32, 
-         subject != 33, subject != 34, subject != 35)
+         subject != 30,
+         group != "M1")
 
 # Compute inverse efficiency score and update group labels
 dataset <- dataset %>%
-  mutate(ies = genuine.rt / genuine.accuracy,  # Compute inverse efficiency score
-         group = ifelse(group == "Experimental", group, "ctrl"))  # Mutate group to be "Experimental" or "ctrl"
+  mutate(ies = genuine.rt / genuine.accuracy)  # Mutate group to be "Experimental" or "ctrl"
 
 # Check if filters are correctly applied
 unique(dataset$group)  # Check unique group values
@@ -129,10 +128,10 @@ vif(fit6)
 
 AIC(fit0, fit1, fit2, fit3, fit4, fit5, fit6)
 # Based on the AIC values, the best model is fit6 (session * group * emotion),
-# as it has the lowest AIC value (1092.109).
+# as it has the lowest AIC value (1072.605).
 BIC(fit0, fit1, fit2, fit3, fit4, fit5, fit6)
 # Based on the BIC values, the best model is fit3 (emotion),
-# as it has the lowest BIC value (1105.695).
+# as it has the lowest BIC value (1087.282).
 
 # Check residual diagnostics
 par(mfrow = c(2, 2))
