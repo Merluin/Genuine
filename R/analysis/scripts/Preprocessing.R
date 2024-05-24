@@ -35,6 +35,7 @@ group <- unique(dataset$group)
 # Data summarization for participants
 summary_participants <- dataset %>%
   filter(Trials_loop.thisRepN == 0) %>%
+  mutate(genuine_slider.response = abs(genuine_slider.response)) %>%
   group_by( participant, emotion, elicitation, session) %>%
   summarize_data()
 
@@ -90,7 +91,7 @@ dataset_long <- list.files(path="data",pattern="\\.csv$", full.names = TRUE) %>%
   select(-X)
 
 # Save the concatenated data frame
-write.xlsx(dataset_long, paste0("data/Accuracy_genuine_lf.xlsx"))
+write.xlsx(dataset_long, paste0("data/dati_summary_lf.xlsx"))
 
 #################################################
 # 
