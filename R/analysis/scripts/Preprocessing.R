@@ -69,7 +69,10 @@ long_format <-summary_emotion %>%
           emotion.slider.incorrect = emotion.slider0.mean,
           subject = i) %>%
   select(subject,session, emotion,
-         genuine.accuracy,genuine.rt)
+         genuine.accuracy,genuine.rt,
+         genuine.slider.correct,genuine.slider.incorrect,
+         emotion.accuracy,
+         emotion.slider.correct,emotion.slider.incorrect)
 
   long_format$group <- group
  # pts <- pts + 100  # Ensure the order is sequential from 1, 2, 3,..., 37 instead of 1, 10, 11,..., 37

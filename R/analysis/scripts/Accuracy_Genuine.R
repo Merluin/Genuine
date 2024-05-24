@@ -25,6 +25,15 @@ dataset <- read_excel("data/accuracy_genuine_lf.xlsx", sheet = "Sheet 1") %>%
 dataset <- dataset %>%
   mutate(ies = genuine.rt / genuine.accuracy)  # Mutate group to be "Experimental" or "ctrl"
 
+dataset %>%
+  group_by(group, emotion) %>%
+  summarise(mean = mean(genuine.accuracy)) %>%
+  spread( emotion, mean)
+dataset %>%
+  group_by(group, emotion) %>%
+  summarise(sd = sd(genuine.accuracy)) %>%
+  spread( emotion, sd)
+
 # Check if filters are correctly applied
 unique(dataset$group)  # Check unique group values
 unique(dataset$subject)  # Check unique subject values
@@ -179,6 +188,17 @@ inter_complete <- emmeans(fit, pairwise ~ group * session * emotion, adjust = "b
 # Note: The most relevant for your hypothesis is `inter_groupemotion`
 # which specifically checks differences in session (pre vs post) within each group and emotion.
 
+# difference between group session 1
+dat <- data %>% 
+  filter(session == 1)
+# Model with interaction between session, group, and emotion
+fit <- glmer(scorep ~ group * emotion + (1|subject),
+              data = dat,
+              family = binomial(link = "logit"),
+              weights = nt)
+
+car::Anova(fit, type = "III")
+emmeans(fit, pairwise ~ group | emotion, adjust = "bonf")
 
 #################################################
 # 
