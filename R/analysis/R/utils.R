@@ -7,7 +7,29 @@
 #
 #  Update:      18/12/23
 ###########################################################################
-
+#' eta2
+#' @description return eta2 from anova aov_ez
+#' @param fit from aov_ez
+#'
+#' @export
+#'
+eta2 <- function(anova) {
+  # Extract the ANOVA table
+  anova_table <- anova$anova_table
+  # Calculate the sum of squares for the effect and residuals
+  ss_effect <- anova_table$`num Df` * anova_table$`MSE` * anova_table$`F`
+  ss_residual <- anova_table$`den Df` * anova_table$`MSE`
+  ss_total <- ss_effect + ss_residual
+  # Compute eta squared for the effect
+  eta2 <- ss_effect / ss_total
+  
+  # Combine eta squared with the ANOVA table
+  eta_squared_table <- data.frame(
+    Term = rownames(anova_table),  # Exclude residual term
+    Eta_Squared = eta2)
+  
+  return(eta_squared_table)
+}
 
 
 #' convert_column

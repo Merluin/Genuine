@@ -15,11 +15,11 @@ rm(list = ls())  # Clear the existing workspace to avoid conflicts
 devtools::load_all()  # Load necessary functions and packages
 
 # Data loading and eliminate outliers and 5 of the 6 M1 group
-dataset <- read_excel("data/accuracy_genuine_lf.xlsx", sheet = "Sheet 1") %>% 
+dataset <- read_excel("data/dati_summary_lf.xlsx", sheet = "Sheet 1") %>% 
   filter(session != 2, 
          subject != 8, subject != 11, subject != 19, 
-         subject != 30,
-         group != "M1")
+         subject != 30)
+
 
 # Compute inverse efficiency score and update group labels
 dataset <- dataset %>%
@@ -161,6 +161,44 @@ fit <- fit6
 # This helps visualize the estimated effects of predictors and their interactions
 plot(allEffects(fit))
 
+p<-data %>%
+  group_by(emotion,session,group) %>%
+  summarise(sd = sd(genuine.accuracy),
+            n = n(),
+            se = sd / sqrt(n),
+            mean = mean(genuine.accuracy)) %>%
+  mutate(session = ifelse(session == 1,"pre","post"),
+         session = factor(session, levels = c("pre","post")),
+         emotion = case_when(emotion == "anger" ~ "Anger",
+                             emotion == "fear" ~ "Fearful",
+                             emotion == "happiness" ~ "Happiness"),
+         emotion = factor(emotion, levels = c("Anger","Fearful","Happiness")),
+         group = factor(group, levels = c("Experimental","M1","Control")),
+         label = paste0(group,"_",emotion)) %>%
+  ggplot( aes(x = label, y = mean, fill = session)) +
+  geom_bar(position = position_dodge(width = 0.85), stat = "identity", color = "black") +  # Bar plot with mean values
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se),
+                position = position_dodge(width = 0.85), width = 0.25) +
+ # facet_grid(. ~ group) +
+  #coord_flip(ylim = c(0.6, 0.9)) + 
+  coord_cartesian(ylim = c(0.6, 0.9)) +# Extend the y-axis limits
+  labs(x = "", y = "Mean Accuracy", fill = "Session") +  # Labels for axes and legend
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "white", colour = "white"),  # Set background to white
+    panel.grid.major = element_blank(),  # Remove major grid lines
+    panel.grid.minor = element_blank(),  # Remove minor grid lines
+    legend.position = "bottom",  # Remove the legend
+    axis.line = element_line(color = "black"),  # Add axis lines back
+    axis.ticks = element_line(color = "black"),  # Add axis ticks back
+    text = element_text(family = "Helvetica"),
+    axis.text.x = element_text(angle = 45, hjust = 1) 
+  ) +
+  scale_fill_manual(values = c("pre" = "#4676A9", "post" = "#F43C25"))+
+  ggsignif::geom_signif(y_position = 0.88, xmin = c( 3.75,6.75, 7.75, 8.75), xmax = c(4.25,7.25, 8.25, 9.25), textsize = 7,
+                        annotations = c("***","**","***","**"))
+ggsave("plots/AccuracyGenuine.jpg", plot = p, width = 7, height = 5, units = "in", dpi = 400)
+
 # Perform Type III Analysis of Variance (ANOVA) on the fitted model
 # Type III ANOVA is used to assess the significance of each predictor after accounting for all other predictors
 car::Anova(fit, type = "III")
@@ -198,7 +236,7 @@ fit <- glmer(scorep ~ group * emotion + (1|subject),
               weights = nt)
 
 car::Anova(fit, type = "III")
-emmeans(fit, pairwise ~ group | emotion, adjust = "bonf")
+
 
 #################################################
 # 

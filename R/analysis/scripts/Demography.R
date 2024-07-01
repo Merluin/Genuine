@@ -22,8 +22,7 @@ data <- dataset %>%
   filter(session == 1, 
          file == "1_rg_2.mp4",
          participant != 8, participant != 11, participant != 19, 
-         participant != 30, 
-         group != "M1") %>%
+         participant != 30) %>%
   select( group, participant, gender, eta) %>%
   mutate(gender = ifelse(gender == "m", "male", "female")) # Recode gender for clarity
 
@@ -63,6 +62,20 @@ write.xlsx(descriptive_table, "data/Table1.xlsx", rowNames = FALSE) # Save the t
 
 
 # 1. ANOVA on demography
+# 1. ANOVA on Group
+eta <- aov_ez("participant", "eta", data, between = "group")
+eta2(eta)
+
+
+# Normality Test for the entire RT distribution using Shapiro-Wilk test
+# Homogeneity of Variances Test using Levene's Test
+residuals <- residuals(eta)
+shapiro_test_residuals <- shapiro.test(residuals)
+leveneTest(eta ~ group, data = data)
+
+# QQ plot for visual inspection of residuals normality
+qqnorm(residuals)
+qqline(residuals, col = "steelblue")
 test<-t.test(eta ~ group, data = data)
 t_to_d(test$statistic,test$parameter, paired = FALSE, ci = 0.95, alternative = "two.sided")
 
