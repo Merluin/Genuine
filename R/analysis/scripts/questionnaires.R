@@ -14,101 +14,27 @@ rm(list=ls()) # Remove all objects from the workspace for a fresh start
 devtools::load_all() # Load all packages and functions from the local directory
 
 # Questionnaire ----
-subjectorder<-as.character(c(1:45))
-Questionnaires<-questionnaires("original_data/questionnaires.csv",subjectorder)
+subjectorder<-as.character(c(1:42))
+Questionnaires<-questionnaires("original_data/questionnaires.csv",subjectorder,";")
 
-#age
-age<-Questionnaire%>%
-  select(id, age)%>%
-  summarise_at(vars(age), list(length,mean,sd))%>%
-  'colnames<-'(c( "n","mean", "Sd"))
-
-#age
-hand<-Questionnaires%>%
-  filter(id!=1,  id!=23)%>%
-  select(id, hand)
-table(hand$hand)
 
 # IRI TAS summary
-IRI<-Questionnaire%>%
+IRI<-Questionnaires%>%
   select(id, iri_tot)%>%
   drop_na()%>%
-  summarise_at(vars(iri_tot), list(mean,sd))%>%
-  'colnames<-'(c( "mean", "Sd"))
-TAS<-Questionnaire%>%
+  summarise_at(vars(iri_tot), list(mean,sd,max,min))%>%
+  'colnames<-'(c( "mean", "Sd","max","min"))
+TAS<-Questionnaires%>%
   select(id, tas_tot)%>%
-  summarise_at(vars( tas_tot), list(mean,sd))%>%
-  'colnames<-'(c( "mean", "Sd"))
+  drop_na()%>%
+  summarise_at(vars( tas_tot), list(mean,sd,max,min))%>%
+  'colnames<-'(c( "mean", "Sd","max","min"))
 
 
-Questionnaire<-Questionnaire%>%
+Questionnaire<-Questionnaires%>%
   select(fantasy,perspective_taking,empathic_concern,personal_distress,iri_tot,tas_tot)
 
-# Valuation ----
-val<-valuation_dataset %>%
-  filter(subject!=1,subject!=23 )%>%
-  select( subject,mimicry, stim.expression, valence,arousal) %>%
-  group_by(subject,mimicry,stim.expression) %>%
-  summarise_at(vars(valence,arousal), list(mean))%>%
-  gather(cat,val,-c(subject,mimicry,stim.expression))%>%
-  mutate(cond=paste0(cat,".",mimicry,".",stim.expression))%>%
-  group_by(subject,cond,val) %>%
-  select(subject,cond,val)%>%
-  spread(cond,val)
-val<-cbind(Questionnaire,val[,-1])%>%
-  na.omit()
 
-# OR ----
-OR<-onset_dataset%>%
-  filter(subject!=1,subject!=23 )%>%
-  drop_na()%>%
-  select(subject, mimicry, initial_percept, onset)%>%
-  'colnames<-'(c("subject", "mimicry", "initial_pt", "onset"))%>%
-  group_by(subject,mimicry,initial_pt) %>%
-  summarise_at(vars(onset), list(mean))%>%
-  as.data.frame()%>%
-  mutate(cond=paste0("OR.",mimicry,".",initial_pt))%>%
-  group_by(subject,cond,onset) %>%
-  select(subject,cond,onset)%>%
-  spread(cond,onset)
-OR<-cbind(Questionnaire,OR[,-1])%>%
-  na.omit()
-
-# IP ----
-IP<-onset_dataset %>%
-  filter(subject!=1,subject!=23 )%>%
-  select( subject,mimicry, initial_percept, onset)%>%
-  mutate(freq = case_when(onset>=1 ~ 1))%>%
-  na.omit()%>%
-  group_by(subject,mimicry, initial_percept) %>%
-  summarise_at(vars(freq), list(sum))%>%
-  as.data.frame()%>%
-  mutate(cond=paste0("IP.",mimicry,".",initial_percept))%>%
-  group_by(subject,cond,freq) %>%
-  select(subject,cond,freq)%>%
-  spread(cond,freq)
-IP<-cbind(Questionnaire,IP[,-1])%>%
-  na.omit()
-
-# Cumulative Time ----
-  CT<-rivalry_dataset%>%
-  filter(subject!=1,subject!=23 )%>%
-  select(subject, mimicry, key,expression, trial,  duration)%>%
-  group_by(subject, mimicry, expression, trial)%>%
-  summarise_at(vars(duration), list(sum))%>%
-  spread(expression,duration,fill=0)%>%
-  select(subject ,mimicry ,trial, happy, mixed, neutral)%>%
-  gather(emotion,time,4:6)%>%
-  as.data.frame()%>%
-  group_by(subject,mimicry,emotion) %>%
-  summarise_at(vars(time), list(mean))%>%
-  mutate(cond= paste0("CT.",mimicry,".",emotion))%>%
-  group_by(subject) %>%
-  select( subject,cond,time)%>%
-  spread(cond,time)
-
-CT<-cbind(Questionnaire,CT[,-1])%>%
-  na.omit()         
 
 ############### Plot cor ----
 jpeg("07.figures/cor_val_exp2.jpg", units="in", width=10, height=8, res=200)

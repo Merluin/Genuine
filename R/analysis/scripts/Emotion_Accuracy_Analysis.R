@@ -29,11 +29,20 @@ dataset <- read_excel("data/dati_summary_lf.xlsx", sheet = "Sheet 1")  %>%
 
 dataset %>%
   group_by(group, emotion) %>%
-  summarise(mean = mean(correct)) %>%
+  summarise(mean = mean(correct)*100) %>%
   spread( emotion, mean)
 dataset %>%
   group_by(group, emotion) %>%
-  summarise(sd = sd(correct)) %>%
+  summarise(sd = sd(correct)*100) %>%
+  spread( emotion, sd)
+
+dataset %>%
+  group_by(emotion) %>%
+  summarise(mean = mean(correct)*100) %>%
+  spread( emotion, mean)
+dataset %>%
+  group_by(emotion) %>%
+  summarise(sd = sd(correct)*100) %>%
   spread( emotion, sd)
 
 # Check if filters are correctly applied
@@ -159,34 +168,33 @@ plot(fit5)
 # Assign the best model (fit6) to the variable fit for further analysis
 fit <- fit5
 
+#The best-fitting model was selected based on the AIC and BIC values, despite the lack of significant p-values. This model showed the lowest AIC and BIC values, indicating it provided the best fit to the data among the models tested. The Analysis of Deviance Table (Type III Wald chi-square tests) for the selected model accuracy ~ group * emotion + (1 | subject) indicated significant main effects for emotion, χ²(2) = 52.23, p < 0.001. In which accuracy related to recognition of Anger stimuli (mean = 96.8, S.D. = 6.6) are higher than accuracy for Fearful stimuli (mean = 94.2 S.D. = 8.1), z = 7.23, p < 0.001. As expected, no main effect for the Group factor was found χ²(2) = 4.29, p = 0.11. The interaction between group and emotion was found to be significant, χ²(4) = 38.89, p < 0.001. Difference was found in Anger stimuli in which Experimental group (mean = 94.9, S.D. = 8.9) was less accurate than Control and Motor groups (mean = 97.7, S.D. = 4.27; mean = 97.7, S.D. = 5.47). 
+
 # Plot the effects of all predictors in the model
 # This helps visualize the estimated effects of predictors and their interactions
 plot(allEffects(fit))
 
 p<- dataset %>%
-  group_by(emotion,session,group) %>%
+  group_by(emotion,group) %>%
   summarise(sd = sd(correct),
             n = n(),
             se = sd / sqrt(n),
             mean = mean(correct)) %>%
-  mutate(session = case_when(session == "1" ~ "pre",
-                             session == "2" ~ "post0",
-                             session == "3" ~ "post30"),
-         session = factor(session, levels = c("pre","post0","post30")),
+  mutate(
          emotion = case_when(emotion == "anger" ~ "Anger",
                              emotion == "fear" ~ "Fearful",
                              emotion == "happiness" ~ "Happiness"),
          emotion = factor(emotion, levels = c("Anger","Fearful","Happiness")),
-         group = factor(group, levels = c("Experimental","M1","Control")),
+         group = factor(group, levels = c("Experimental","Control","M1")),
          label = paste0(group,"_",emotion)) %>%
-  ggplot( aes(x = label, y = mean, fill = session)) +
+  ggplot( aes(x = group, y = mean, fill = emotion)) +
   geom_bar(position = position_dodge(width = 0.85), stat = "identity", color = "black") +  # Bar plot with mean values
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se),
                 position = position_dodge(width = 0.85), width = 0.25) +
   # facet_grid(. ~ group) +
   #coord_flip(ylim = c(0.6, 0.9)) + 
-  coord_cartesian(ylim = c(0.6, 1)) +# Extend the y-axis limits
-  labs(x = "", y = "Mean Accuracy", fill = "Session") +  # Labels for axes and legend
+  coord_cartesian(ylim = c(0.6, 1.1)) +# Extend the y-axis limits
+  labs(x = "", y = "Mean Accuracy", fill = "Emotion") +  # Labels for axes and legend
   theme_minimal() +
   theme(
     panel.background = element_rect(fill = "white", colour = "white"),  # Set background to white
@@ -198,21 +206,19 @@ p<- dataset %>%
     text = element_text(family = "Helvetica"),
     axis.text.x = element_text(angle = 45, hjust = 1) 
   ) +
-  scale_fill_manual(values = c("pre" = "#D9A9CF", "post0" = "#994A7F","post30" = "#7E5084"))+
-  ggsignif::geom_signif(y_position = 0.77, xmin = c( 3.71), xmax = c(4 ), textsize = 6,
-                        annotations = c("*")) +
-  ggsignif::geom_signif(y_position = 0.83, xmin = c( 3.71), xmax = c(4.28), textsize = 6,
+  scale_fill_manual(values = c("Anger" = "#D9A9CF", "Fearful" = "#994A7F","Happiness" = "#7E5084")) +
+  ggsignif::geom_signif(y_position = 1.08, xmin = c( 0.71), xmax = c(1.28 ), textsize = 6,
+                        annotations = c("***"))  +
+  ggsignif::geom_signif(y_position = 1.08, xmin = c( 1.71), xmax = c(2.28), textsize = 6,
                         annotations = c("***")) +
-  ggsignif::geom_signif(y_position = 0.79, xmin = c(  6.71), xmax = c(7.28), textsize = 6,
-                        annotations = c("**")) +
-  ggsignif::geom_signif(y_position = 0.85, xmin = c(  7.71), xmax = c(8), textsize = 6,
-                        annotations = c("*"))  +
-  ggsignif::geom_signif(y_position = 0.91, xmin = c(  7.71), xmax = c(8.28), textsize = 6,
+  ggsignif::geom_signif(y_position = 1.03, xmin = c(1), xmax = c(1.28), textsize = 6,
                         annotations = c("***")) +
-  ggsignif::geom_signif(y_position = 0.74, xmin = c(  8.71), xmax = c(9 ), textsize = 6,
-                        annotations = c("*")) +
-  ggsignif::geom_signif(y_position = 0.8, xmin = c(  8.71), xmax = c( 9.21), textsize = 6,
-                        annotations = c("**"))
+  ggsignif::geom_signif(y_position = 1.03, xmin = c(2), xmax = c(2.28), textsize = 6,
+                        annotations = c("***"))  +
+  ggsignif::geom_signif(y_position = 1.01, xmin = c( 1.71), xmax = c(2), textsize = 6,
+                        annotations = c("***")) +
+  ggsignif::geom_signif(y_position = 1.01, xmin = c(  2.71), xmax = c(3 ), textsize = 6,
+                        annotations = c("***")) 
 
 ggsave("plots/AccuracyGenuineSession3.jpg", plot = p, width = 7, height = 5, units = "in", dpi = 400)
 
@@ -225,9 +231,13 @@ car::Anova(fit, type = "III")
 
 # Calculate estimated marginal means (EMMs) and perform pairwise comparisons for the main effect of emotion
 # 'adjust = "bonf"' applies Bonferroni correction for multiple comparisons
-main_emotion <- emmeans(fit, pairwise ~ group|emotion, adjust = "bonf")
+main_emotion <- emmeans(fit, pairwise ~ emotion, adjust = "bonf")
+
+interemotion <- emmeans(fit, pairwise ~ emotion|group, adjust = "bonf")
+emmeans(fit, pairwise ~ group|emotion, adjust = "bonf")
 
 
+t.test(data$scorep, mu = 0.33, alternative = "greater")
 #################################################
 # 
 # END

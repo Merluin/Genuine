@@ -175,7 +175,7 @@ p<- dataset %>%
                              emotion == "fear" ~ "Fearful",
                              emotion == "happiness" ~ "Happiness"),
          emotion = factor(emotion, levels = c("Anger","Fearful","Happiness")),
-         group = factor(group, levels = c("Experimental","Control","M1")),
+         group = factor(group, levels = c("Experimental","M1","Control")),
          label = paste0(group,"_",emotion)) %>%
   ggplot( aes(x = label, y = mean, fill = session)) +
   geom_bar(position = position_dodge(width = 0.85), stat = "identity", color = "black") +  # Bar plot with mean values
@@ -203,8 +203,6 @@ p<- dataset %>%
                       annotations = c("***")) +
   ggsignif::geom_signif(y_position = 0.79, xmin = c(  6.71), xmax = c(7.28), textsize = 6,
                         annotations = c("**")) +
-  ggsignif::geom_signif(y_position = 0.77, xmin = c(  6.71), xmax = c(7), textsize = 6,
-                        annotations = c(".")) +
   ggsignif::geom_signif(y_position = 0.85, xmin = c(  7.71), xmax = c(8), textsize = 6,
                         annotations = c("*"))  +
   ggsignif::geom_signif(y_position = 0.91, xmin = c(  7.71), xmax = c(8.28), textsize = 6,
@@ -226,9 +224,6 @@ car::Anova(fit, type = "III")
 # Calculate estimated marginal means (EMMs) and perform pairwise comparisons for the main effect of emotion
 # 'adjust = "bonf"' applies Bonferroni correction for multiple comparisons
 main_emotion <- emmeans(fit, pairwise ~ emotion, adjust = "bonf")
-main_session <- emmeans(fit, pairwise ~ session, adjust = "bonf")
-
-inter_groupsession <- emmeans(fit, pairwise ~ session| group, adjust = "bonf")
 
 # Calculate estimated marginal means (EMMs) and perform pairwise comparisons for the interaction effect
 # of session within each group and emotion

@@ -39,12 +39,33 @@ dataset <- dataset %>%
 # Calculating hits, misses, false alarms, and correct rejections
 data_genuine <- dataset %>%
   SliderGenuineDetection() %>%
-  mutate(Session = as.factor(session),
-         Emotion = as.factor(emotion),
-         Group = as.factor(group),
-         Participant = participant,
-          HR = abs(Hits)/( abs(Hits)+abs(Misses) ),
-          FAR = abs(False.Alarms)/( abs(False.Alarms)+abs(Correct.Rejections) ))
+  gather(signal, score, 5:8) %>%
+  mutate(score = factor(score),
+         emotion = factor(emotion),
+         session = factor(session),
+         group = factor(group),
+         signal = factor(signal, ordered = TRUE))
+
+write.csv(data_genuine, file = "~/Desktop/data_genuine.csv", row.names = FALSE)
+
+# Fit the cumulative link model
+model <- clm(score ~ emotion * session * group * signal, data = data_genuine)
+
+# Summary of the model
+summary(model)
+
+# ANOVA-like table for interpreting results
+anova_results <- Anova(model, type = "III")
+posthoc <- emmeans(model, pairwise ~ emotion | session | group | signal)
+summary(posthoc)
+
+  
+  # mutate(Session = as.factor(session),
+  #        Emotion = as.factor(emotion),
+  #        Group = as.factor(group),
+  #        Participant = participant,
+  #         HR = abs(Hits)/( abs(Hits)+abs(Misses) ),
+  #         FAR = abs(False.Alarms)/( abs(False.Alarms)+abs(Correct.Rejections) ))
 
 # Calculate Z-scores for HR and FAR
 data_sdt <- data_genuine %>%

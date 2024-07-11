@@ -1,4 +1,4 @@
-questionnaires <- function(filename,subjectorder)
+questionnaires <- function(filename,subjectorder,sep_)
   
 {
 
@@ -10,23 +10,23 @@ library(car)
 
 #load data
 
-dati <- read.csv(filename, sep=",")
+dati <- read.csv(filename, sep= sep_)
 
 ## Preparing dataframe
 #### Removing unused variables
-dati <- dati[,-1]
+# dati <- dati[,-1] done manualy orodata
 rownames(dati) <- c()
 
 IRI <- paste0("iri_", 1:28)
 TAS <- paste0("tas_", 1:20)
 colnames(dati)[7:34] <- IRI #rinomino item IRI
 colnames(dati)[35:54] <- TAS #rinomino item TAS
-colnames(dati)[1] <- "name"
-colnames(dati)[2] <- "surname"
-colnames(dati)[3] <- "gender"
-colnames(dati)[4] <- "age"
-colnames(dati)[5] <- "hand"
-colnames(dati)[6] <- "eye"
+colnames(dati)[1] <- "date"
+colnames(dati)[2] <- "subject"
+colnames(dati)[3] <- "group"
+colnames(dati)[4] <- "gender"
+colnames(dati)[5] <- "age"
+colnames(dati)[6] <- "hand"
 
 ordine.corretto<-subjectorder
 dati<-dati[ordine.corretto,]
@@ -78,7 +78,7 @@ tas_tot <- apply(dati[,TAS],1,sum)
 dati <- cbind(dati,iri_tot, fantasy, perspective_taking, personal_distress, empathic_concern, tas_tot)
 attach(dati)
 
-scoring <- data.frame(id,age,gender,eye,hand,fantasy,perspective_taking,empathic_concern,personal_distress,iri_tot,tas_tot)
+scoring <- data.frame(id,group,gender,age,hand,fantasy,perspective_taking,empathic_concern,personal_distress,iri_tot,tas_tot)
 
 detach(dati)
 
