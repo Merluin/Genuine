@@ -238,6 +238,25 @@ emmeans(fit, pairwise ~ group|emotion, adjust = "bonf")
 
 
 t.test(data$scorep, mu = 0.33, alternative = "greater")
+
+
+
+
+# difference between group session 1
+dat <- data %>% 
+  filter(session == 1)
+# Model with interaction between session, group, and emotion
+fit <- glmer(scorep ~  emotion * group + (1|subject),
+             data = dat,
+             family = binomial(link = "logit"),
+             weights = nt)
+
+car::Anova(fit, type = "III")
+emmeans(fit, pairwise ~ emotion, adjust = "bonf")
+plot(allEffects(fit))
+emmeans(fit, pairwise ~ emotion | group, adjust = "bonf")
+
+
 #################################################
 # 
 # END

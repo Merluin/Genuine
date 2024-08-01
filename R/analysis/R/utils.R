@@ -145,3 +145,29 @@ create_emotion_df <- function(group_name) {
   )
 }
 
+#' create_bar_plot
+#' @description create a ggplot
+#' @param 
+#'
+#' @export
+#'
+create_bar_plot <- function(data) {
+  ggplot( data, aes(x = emotion, y = mean, fill = session)) +
+  geom_bar(position = position_dodge(width = 0.85), stat = "identity", color = "black") +  # Bar plot with mean values
+  geom_errorbar(aes(ymin = mean, ymax = mean + se),
+                position = position_dodge(width = 0.85), width = 0.25) +
+  # facet_grid(. ~ group) +
+  #coord_flip(ylim = c(0.6, 0.9)) + 
+  coord_cartesian(ylim = c(0.5, 1)) +# Extend the y-axis limits
+  labs(x = "", y = "Mean Accuracy", fill = "Session") +  # Labels for axes and legend
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "white", colour = "white"),  # Set background to white
+    panel.grid.major = element_blank(),  # Remove major grid lines
+    panel.grid.minor = element_blank(),  # Remove minor grid lines
+    legend.position = "bottom",  # Remove the legend
+    axis.line = element_line(color = "black"),  # Add axis lines back
+    axis.ticks = element_line(color = "black"),  # Add axis ticks back
+    text = element_text(family = "Helvetica"),
+   # axis.text.x = element_text(angle = 45, hjust = 1) # 
+  )}

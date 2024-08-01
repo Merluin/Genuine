@@ -15,6 +15,8 @@ rm(list = ls())  # Clear the existing workspace to avoid conflicts
 devtools::load_all()  # Load necessary functions and packages
 
 # Data loading and eliminate outliers and 5 of the 6 M1 group
+Questionnaire <- read_excel("data/Questionnaire.xlsx", sheet = "Sheet 1") 
+  
 dataset <- read_excel("data/dati_summary_lf.xlsx", sheet = "Sheet 1") %>% 
   filter(
     subject != 8, subject != 11, subject != 19, 
@@ -167,54 +169,54 @@ p<- dataset %>%
             n = n(),
             se = sd / sqrt(n),
             mean = mean(genuine.accuracy)) %>%
-  mutate(session = case_when(session == "1" ~ "pre",
-                             session == "2" ~ "post0",
-                             session == "3" ~ "post30"),
-         session = factor(session, levels = c("pre","post0","post30")),
+  mutate(session = case_when(session == "1" ~ "T0",
+                             session == "2" ~ "T1",
+                             session == "3" ~ "T30"),
+         session = factor(session, levels = c("T0","T1","T30")),
          emotion = case_when(emotion == "anger" ~ "Anger",
                              emotion == "fear" ~ "Fearful",
                              emotion == "happiness" ~ "Happiness"),
          emotion = factor(emotion, levels = c("Anger","Fearful","Happiness")),
          group = factor(group, levels = c("Experimental","Control","M1")),
-         label = paste0(group,"_",emotion)) %>%
-  ggplot( aes(x = label, y = mean, fill = session)) +
-  geom_bar(position = position_dodge(width = 0.85), stat = "identity", color = "black") +  # Bar plot with mean values
-  geom_errorbar(aes(ymin = mean - se, ymax = mean + se),
-                position = position_dodge(width = 0.85), width = 0.25) +
-  # facet_grid(. ~ group) +
-  #coord_flip(ylim = c(0.6, 0.9)) + 
-  coord_cartesian(ylim = c(0.6, 0.95)) +# Extend the y-axis limits
-  labs(x = "", y = "Mean Accuracy", fill = "Session") +  # Labels for axes and legend
-  theme_minimal() +
-  theme(
-    panel.background = element_rect(fill = "white", colour = "white"),  # Set background to white
-    panel.grid.major = element_blank(),  # Remove major grid lines
-    panel.grid.minor = element_blank(),  # Remove minor grid lines
-    legend.position = "bottom",  # Remove the legend
-    axis.line = element_line(color = "black"),  # Add axis lines back
-    axis.ticks = element_line(color = "black"),  # Add axis ticks back
-    text = element_text(family = "Helvetica"),
-    axis.text.x = element_text(angle = 45, hjust = 1) 
-  ) +
-  scale_fill_manual(values = c("pre" = "#D9A9CF", "post0" = "#994A7F","post30" = "#7E5084"))+
-  ggsignif::geom_signif(y_position = 0.77, xmin = c( 3.71), xmax = c(4 ), textsize = 6,
-                        annotations = c("*")) +
-  ggsignif::geom_signif(y_position = 0.83, xmin = c( 3.71), xmax = c(4.28), textsize = 6,
-                      annotations = c("***")) +
-  ggsignif::geom_signif(y_position = 0.79, xmin = c(  6.71), xmax = c(7.28), textsize = 6,
-                        annotations = c("**")) +
-  ggsignif::geom_signif(y_position = 0.77, xmin = c(  6.71), xmax = c(7), textsize = 6,
-                        annotations = c(".")) +
-  ggsignif::geom_signif(y_position = 0.85, xmin = c(  7.71), xmax = c(8), textsize = 6,
-                        annotations = c("*"))  +
-  ggsignif::geom_signif(y_position = 0.91, xmin = c(  7.71), xmax = c(8.28), textsize = 6,
-                        annotations = c("***")) +
-  ggsignif::geom_signif(y_position = 0.74, xmin = c(  8.71), xmax = c(9 ), textsize = 6,
-                        annotations = c("*")) +
-  ggsignif::geom_signif(y_position = 0.8, xmin = c(  8.71), xmax = c( 9.21), textsize = 6,
-                        annotations = c("**"))
+         label = paste0(group,"_",emotion)) 
+
+Control <- p %>%
+  filter(group == "Control")%>%
+  create_bar_plot() +
+  scale_fill_manual(values = c("T0" = "#D9D9D9", "T1" = "#A9A9A9","T30" = "#7E7E7E"))
   
-ggsave("plots/AccuracyGenuineSession3.jpg", plot = p, width = 7, height = 5, units = "in", dpi = 400)
+
+Experimental <- p %>%
+filter(group == "Experimental")%>%
+  create_bar_plot() +
+  scale_fill_manual(values = c("T0" = "#D9A9CF", "T1" = "#994A7F","T30" = "#7E5084"))+
+  ggsignif::geom_signif(y_position = 0.8, xmin = c( 0.71), xmax = c(1 ), textsize = 6,
+                        annotations = c("*")) +
+  ggsignif::geom_signif(y_position = 0.9, xmin = c( 0.71), xmax = c(1.28), textsize = 6,
+                      annotations = c("***"))
+
+Motor <- p %>%
+  filter(group == "M1")%>%
+  create_bar_plot() +
+  scale_fill_manual(values = c("T0" = "#A9CFD9", "T1" = "#4A7F99","T30" = "#50847E"))+
+  ggsignif::geom_signif(y_position = 0.9, xmin = c(  0.71), xmax = c(1.28), textsize = 6,
+                        annotations = c("**")) +
+  ggsignif::geom_signif(y_position = 0.8, xmin = c(  0.71), xmax = c(1), textsize = 3,
+                        annotations = c("#")) +
+  ggsignif::geom_signif(y_position = 0.86, xmin = c(  1.71), xmax = c(2), textsize = 6,
+                        annotations = c("*"))  +
+  ggsignif::geom_signif(y_position = 0.95, xmin = c(  1.71), xmax = c(2.28), textsize = 6,
+                        annotations = c("***")) +
+  ggsignif::geom_signif(y_position = 0.78, xmin = c(  2.71), xmax = c(3 ), textsize = 6,
+                        annotations = c("*")) +
+  ggsignif::geom_signif(y_position = 0.88, xmin = c(  2.71), xmax = c( 3.21), textsize = 6,
+                        annotations = c("**"))
+
+combined_plot <- cowplot::plot_grid(Control, Experimental,Motor, labels = c("Control group", "Experimental group","Motor group"),
+                                    hjust = 0.3, label_x = 0.3, ncol = 3)
+
+  
+ggsave("plots/AccuracyGenuineSession3.jpg", plot = combined_plot, width = 7, height = 5, units = "in", dpi = 400)
 
 
 #ggsignif::geom_signif(y_position = 0.88, xmin = c( 3.75,6.75, 7.75, 8.75), xmax = c(4.25,7.25, 8.25, 9.25), textsize = 7,
@@ -225,7 +227,7 @@ car::Anova(fit, type = "III")
 
 # Calculate estimated marginal means (EMMs) and perform pairwise comparisons for the main effect of emotion
 # 'adjust = "bonf"' applies Bonferroni correction for multiple comparisons
-main_emotion <- emmeans(fit, pairwise ~ emotion, adjust = "bonf")
+main_emotion <- emmeans(fit_pre, pairwise ~ emotion, adjust = "bonf")
 main_session <- emmeans(fit, pairwise ~ session, adjust = "bonf")
 
 inter_groupsession <- emmeans(fit, pairwise ~ session| group, adjust = "bonf")
@@ -249,17 +251,121 @@ inter_complete <- emmeans(fit, pairwise ~ group * session * emotion, adjust = "b
 # Note: The most relevant for your hypothesis is `inter_groupemotion`
 # which specifically checks differences in session (pre vs post) within each group and emotion.
 
+
+
 # difference between group session 1
 dat <- data %>% 
   filter(session == 1)
 # Model with interaction between session, group, and emotion
-fit <- glmer(scorep ~ group * emotion + (1|subject),
+fit <- glmer(scorep ~ group *emotion + (1|subject),
              data = dat,
              family = binomial(link = "logit"),
              weights = nt)
 
 car::Anova(fit, type = "III")
-emmeans(fit, pairwise ~ group | emotion, adjust = "bonf")
+plot(allEffects(fit))
+emmeans(fit, pairwise ~ emotion, adjust = "bonf")
+
+
+# Correlation with Questionnaire
+
+library(dplyr)
+library(Hmisc)
+library(ggplot2)
+library(cowplot)
+
+# Assuming correlation_table and Questionnaire are already loaded in your environment
+
+# Summarize the data to calculate mean accuracy and merge with Questionnaire
+correlation_table <- data %>%
+  group_by(subject, session, group) %>%
+  summarise(accuracy = mean(scorep, na.rm = TRUE)) %>%
+  'colnames<-'(c("id", "session", "group", "accuracy"))
+
+correlation_table <- left_join(correlation_table, Questionnaire, by = "id")
+
+# Function to generate plots
+generate_plot <- function(data, time_point, correlation, p_value) {
+  ggplot(data, aes(y = accuracy, x = .data[[time_point]])) +
+    geom_smooth(method = "lm", se = TRUE, color = "#4A70B0", fill = "#97A9C3") +   
+    geom_point(color = "#4B607D") +
+    labs(title = "",
+         y = "Accuracy",
+         x = gsub("_", " ", time_point)) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 10, face = "bold"),
+      axis.title.x = element_text(size = 10, face = "bold"),
+      axis.title.y = element_text(size = 10, face = "bold"),
+      panel.background = element_rect(fill = "white", colour = "white"),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      legend.position = "none",
+      axis.line = element_line(color = "black"),
+      axis.ticks = element_line(color = "black"),
+      text = element_text(family = "Helvetica")
+    ) +
+    coord_cartesian(ylim = c(min(data$accuracy), max(data$accuracy)),
+                    xlim = c(min(data[[time_point]], na.rm = TRUE), max(data[[time_point]], na.rm = TRUE))) +
+    theme(plot.margin = unit(c(0.05, 0.05, 0.05, 0.05), "cm")) +
+    annotate("text", x = min(data[[time_point]], na.rm = TRUE), y = min(data$accuracy), hjust = -0.1, vjust = -0.5, size = 3,
+             label = paste0("R = ", round(correlation, 2), "\np = ", round(p_value, 4)))
+}
+
+# Function to calculate correlations and generate plots for each subgroup
+analyze_subgroup <- function(subgroup_data) {
+  correlations <- numeric()
+  p_values <- numeric()
+  
+  # Calculate correlations and p-values for each column with 'accuracy'
+  for (i in 4:ncol(subgroup_data)) {  # Starting from the 4th column (after id, session, and group)
+    temp <- subgroup_data[, c(4, i)] %>% drop_na()
+    cor_results <- rcorr(as.matrix(temp), type = "pearson")
+    
+    correlations <- c(correlations, cor_results$r[1, 2])
+    p_values <- c(p_values, cor_results$P[1, 2])
+  }
+  
+  # Adjust p-values using FDR
+  adjusted_p_values <- p.adjust(p_values, method = "fdr")
+  
+  # Create a summary table
+  cor_table <- data.frame(
+    Variable = colnames(subgroup_data)[4:ncol(subgroup_data)],
+    Correlation = round(correlations, 2),
+    P_Value = round(p_values, 3),
+    Adjusted_P_Value = round(adjusted_p_values, 4)
+  )
+  
+  # Generate plots
+  plot_list <- list()
+  for (i in 2:nrow(cor_table)) {
+    temp <- subgroup_data[, c(4, i + 3)] %>% drop_na()
+    plot <- generate_plot(temp, cor_table[i, "Variable"], cor_table[i, "Correlation"], cor_table[i, "Adjusted_P_Value"])
+    plot_list[[i-1]] <- plot
+  }
+  
+  combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 3)
+  return(list(cor_table = cor_table, combined_plot = combined_plot))
+}
+
+# Loop through each combination of session and group
+results <- list()
+unique_sessions <- unique(correlation_table$session)
+unique_groups <- unique(correlation_table$group)
+
+for (session in unique_sessions) {
+  for (group in unique_groups) {
+    subgroup_data <- correlation_table %>% filter(session == !!session, group == !!group)
+    if (nrow(subgroup_data) > 0) {
+      result <- analyze_subgroup(drop_na(subgroup_data))
+      results[[paste0("session_", session, "_group_", group)]] <- result
+      print(paste("Session:", session, "Group:", group))
+      print(result$cor_table)
+      ggsave(paste0("combined_plot_session_", session, "_group_", group, ".jpg"), plot = result$combined_plot, width = 15, height = 10, units = "in", dpi = 300)
+    }
+  }
+}
 
 #################################################
 # 

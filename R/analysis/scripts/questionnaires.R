@@ -14,7 +14,18 @@ rm(list=ls()) # Remove all objects from the workspace for a fresh start
 devtools::load_all() # Load all packages and functions from the local directory
 
 # Questionnaire ----
-subjectorder<-as.character(c(1:42))
+# Read the CSV file
+file <- read.csv("original_data/questionnaires.csv", sep = ";", header = TRUE)
+
+# Ensure the Codice.ID column is read correctly and is numeric
+file$Codice.ID <- as.numeric(as.character(file$Codice.ID))
+
+# Arrange the data by Codice.ID
+subjectorder <- file %>%
+  arrange(Codice.ID) %>%
+  drop_na(Codice.ID) %>%
+  pull(Codice.ID)
+
 Questionnaires<-questionnaires("original_data/questionnaires.csv",subjectorder,";")
 
 
@@ -32,8 +43,9 @@ TAS<-Questionnaires%>%
 
 
 Questionnaire<-Questionnaires%>%
-  select(fantasy,perspective_taking,empathic_concern,personal_distress,iri_tot,tas_tot)
+  select(id,fantasy,perspective_taking,empathic_concern,personal_distress,iri_tot,tas_tot)
 
+write.xlsx(Questionnaire, "data/Questionnaire.xlsx", rowNames = FALSE) # Save the table as an Excel file
 
 
 ############### Plot cor ----

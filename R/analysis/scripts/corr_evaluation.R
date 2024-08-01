@@ -32,21 +32,128 @@ data <- dataset %>%
          elicitation = as.factor(elicitation),
          group = as.factor(group),
          arousal = intensity_slider.response) %>%
-  select(subject, emotion, group,session,elicitation, arousal, file) %>%
-  group_by(file, session) %>%
-  summarise(arousal = mean(arousal)) 
+  select(subject, emotion, group,session,elicitation, arousal, file) 
 
-data <- left_join(autoevaluation,data,by = "file") %>%
-  drop_na() 
+dataset <- left_join(autoevaluation,data,by = "file") %>%
+  drop_na() %>%
+  filter(elicitation != "paused") %>%
+  mutate(session = case_when(session == 1 ~ "baseline",
+                             session == 2 ~ "T0",
+                             session == 3 ~ "T20"),
+         session = factor(session,levels = c("baseline","T0","T20")),
+         emotion = case_when(emotion == "anger" ~ "Anger",
+                             emotion == "fear" ~ "Fearful",
+                             emotion == "happiness" ~ "Happiness"),
+         emotion = factor(emotion)) 
 
-# data selection
-datacor <- data %>%
-  mutate(var = paste0(Emotion,"_T",session-1 )) %>%
-  spread(var, arousal) %>%
-  filter(Elicitation != "paused") %>%
-  select(-c(Emotion, Elicitation, file, session))
+data <- dataset%>%
+   group_by(subject, emotion, session, group) %>%
+   summarise(EA = cor(arousal,autoval),
+             arousal = mean(arousal, na.rm =TRUE),
+             autoval= mean(autoval, na.rm =TRUE),
+             rescaled_EA = (EA+1)/2)
+data %>%
+  #filter(emotion == "Anger") %>%
+  group_by(emotion) %>%
+  summarise(Arousal = mean(arousal, na.rm =TRUE),
+            autoval= mean(autoval, na.rm =TRUE))
 
-# Initialize vectors to store results
+# Normality Test for the entire RT distribution using Shapiro-Wilk test
+shapiro_test_result <- shapiro.test(data$EA)
+
+library(glmmTMB)
+# Visual inspection of RT distribution and variance using box plots
+ggplot(data, aes(x = interaction(group, emotion, session), y = EA)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Improve label readability
+
+# Fit the GLMER model using glmer for simplicity
+
+# Set contrasts for categorical predictors in the model
+contrasts(data$group) <- contr.sum(3)
+contrasts(data$session) <- contr.sum(3)
+contrasts(data$emotion) <- contr.sum(3)
+
+# baseline difference
+dat <- data %>% 
+  filter(session == "baseline")
+# Model with interaction between session, group, and emotion
+fit <- glmer(EA ~ group * emotion + (1|subject),
+             data = dat)
+
+car::Anova(fit, type = "III")
+plot(allEffects(fit))
+emmeans(fit, pairwise ~ emotion, adjust = "bonf")
+
+
+# Fit the generalized linear mixed-effects model (GLMM) using Gamma family
+fit0 <- glmmTMB(rescaled_EA ~ 1  + (1 | subject),
+               data = data,
+               family = beta_family())
+fit1 <- glmmTMB(rescaled_EA ~ emotion  + (1 | subject),
+                data = data,
+                family = beta_family())
+fit2 <- glmmTMB(rescaled_EA ~ session + (1 | subject),
+               data = data,
+               family = beta_family())
+fit3 <- glmmTMB(rescaled_EA ~ group + (1 | subject),
+               data = data,
+               family = beta_family())
+fit4 <- glmmTMB(rescaled_EA ~ session * group + (1 | subject),
+                data = data,
+                family = beta_family())
+fit5 <- glmmTMB(rescaled_EA ~ emotion * group + (1 | subject),
+                data = data,
+                family = beta_family())
+fit6 <- glmmTMB(rescaled_EA ~ emotion * session * group + (1 | subject),
+             data = data,
+             family = beta_family())
+
+
+# Compare the models using ANOVA
+anova(fit0, fit1, fit2, fit3, fit4, fit5, fit6)
+
+# Plot all effects from GLMM for visualization
+plot(allEffects(fit))
+
+fit <- fit5
+# ANOVA-type analysis of the GLMM using Wald chi-square tests
+car::Anova(fit)
+emmeans(fit, pairwise ~  emotion, adjust = "fdr")
+
+summary_data <- dataset %>%
+  group_by(group, emotion, session) %>%
+  summarise(
+    R = cor(arousal, autoval),
+    p_value = cor.test(arousal, autoval)$p.value
+  ) %>%
+  mutate(
+    p_format = ifelse(p_value <= 0.001, 0.001,0.01),
+    label = paste0("R = ", round(R, 2), "\np < ", p_format)
+  )
+
+ggplot(dataset, aes(x = arousal, y = autoval, color = emotion)) +
+  #geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  facet_grid(group ~  emotion +session) +
+  labs(x = "Participant evaluation of video intensity", y = "Actor auto-evaluation") +
+  coord_cartesian(ylim = c(2, 9),xlim = c(0, 9)) +# Extend the y-axis limits
+  theme(
+    #panel.background = element_rect(fill = "white", colour = "white"),  # Set background to white
+    #panel.grid.major = element_blank(),  # Remove major grid lines
+    panel.grid.minor = element_blank(),  # Remove minor grid lines
+    legend.position = "bottom",  # Remove the legend
+    axis.line = element_line(color = "black"),  # Add axis lines back
+    axis.ticks = element_line(color = "black"),  # Add axis ticks back
+    text = element_text(family = "Helvetica"),
+    # axis.text.x = element_text(angle = 45, hjust = 1) # 
+  ) +
+  geom_text(data = summary_data, aes(x = -Inf, y = Inf, label = label),
+            hjust = -0.1, vjust = 1.1, inherit.aes = FALSE, size = 3) +
+  scale_x_continuous(breaks = seq(0, 9, by = 1)) +
+  scale_y_continuous(breaks = seq(2, 9, by = 1)) +
+  scale_color_manual(values = c("Anger" = "#A9CFEF", "Fearful" = "#4A7FBB","Happiness" = "#506F8E"))
+
 correlations <- numeric()
 p_values <- numeric()
 
@@ -107,7 +214,7 @@ generate_plot <- function(data, time_point, correlation, p_value) {
 # Initialize a list to store the plots
 plot_list <- list()
 # Loop to generate and store plots in the list
-for (i in 1:nrow(cor_table)) {
+for (i in 1:9) {
   temp <- datacor[, c(1, i + 1)] %>% drop_na()
   plot <- generate_plot(temp, cor_table[i, "Variable"], cor_table[i, "Correlation"], cor_table[i, "Adjusted_P_Value"])
   
@@ -117,10 +224,21 @@ for (i in 1:nrow(cor_table)) {
   #ggsave(paste0("plots/plot_", cor_table[i, "Variable"], ".jpg"), plot = plot, width = 10, height = 6, units = "in", dpi = 300)
 }
 # Combine all plots into a single plot grid
-combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 3)
+ordered_plot_list <- list(
+  plot_list[[3]],
+  plot_list[[1]],
+  plot_list[[2]],
+  plot_list[[6]],
+  plot_list[[4]],
+  plot_list[[5]],
+  plot_list[[9]],
+  plot_list[[7]],
+  plot_list[[8]]
+)
+combined_plot <- cowplot::plot_grid(plotlist = ordered_plot_list, ncol = 3)
 
 # Save combined plot
-ggsave("plots/plot2.jpg", plot = combined_plot, width = 10, height = 3, units = "in", dpi = 300)
+ggsave("plots/plot2.jpg", plot = combined_plot, width = 10, height = 8, units = "in", dpi = 300)
 #################################################
 # 
 # END
