@@ -1,14 +1,14 @@
 GenuineDetection <- function(data) {
   
   data <- data %>%
-    mutate(sdt = case_when( # gesino_kb.keys is participant aswer emotion is genuine: v = TRUE, n = FALSE, elicitation is quality of the video
-      elicitation == "genuine" & gesino_kb.keys == "v" ~ "Hits",
-      elicitation == "genuine" & gesino_kb.keys == "n" ~ "Misses",
-      elicitation != "genuine" & gesino_kb.keys == "v" ~ "False.Alarms",
-      elicitation != "genuine" & gesino_kb.keys == "n" ~ "Correct.Rejections"), 
+    mutate(sdt = case_when( 
+      File.elicitation == "genuine" & AED.resp == "v" ~ "Hits",
+      File.elicitation == "genuine" & AED.resp == "n" ~ "Misses",
+      File.elicitation != "genuine" & AED.resp == "v" ~ "False.Alarms",
+      File.elicitation != "genuine" & AED.resp == "n" ~ "Correct.Rejections"), 
       count = 1)%>%
-    group_by(participant, emotion,session,group,sdt) %>%
-    summarise(count = sum(count), .groups = 'drop') %>%
+    group_by(Pt.id, File.emotion,Exp.session,Pt.group,sdt) %>%
+    summarise(count = sum(count), .Groups = 'drop') %>%
     pivot_wider(names_from = sdt, values_from = count, values_fill = list(count = 0)) %>%
      mutate(HR = Hits / (Hits + Misses),
             FAR = False.Alarms / (False.Alarms + Correct.Rejections),

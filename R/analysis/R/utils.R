@@ -159,7 +159,7 @@ create_bar_plot <- function(data) {
   # facet_grid(. ~ group) +
   #coord_flip(ylim = c(0.6, 0.9)) + 
   coord_cartesian(ylim = c(0.5, 1)) +# Extend the y-axis limits
-  labs(x = "", y = "Mean Accuracy", fill = "Session") +  # Labels for axes and legend
+  labs(x = "", y = "Authenticity Emotion Discrimination (%)", fill = "Session") +  # Labels for axes and legend
   theme_minimal() +
   theme(
     panel.background = element_rect(fill = "white", colour = "white"),  # Set background to white
@@ -171,3 +171,41 @@ create_bar_plot <- function(data) {
     text = element_text(family = "Helvetica"),
    # axis.text.x = element_text(angle = 45, hjust = 1) # 
   )}
+
+#' run_script
+#' @description source a script and return a nice message
+#' @param file a character indicating the file path and name
+#'
+#' @export
+#'
+run_script <- function(file){
+  
+  file_name <- basename(file)
+  file_name <- deparse(substitute(file_name))
+  
+  clean_env() # clean everything
+  
+  source(file)
+  
+  success(paste(file_name, "finished!"))
+  
+}
+
+
+#' clean_env
+#' @description clean the global environment
+#' @export
+#'
+clean_env <- function(){
+  rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv)
+}
+
+#' success
+#'
+#' @param msg a character indicating the message to be printed
+#'
+#' @export
+#'
+success <- function(msg){
+  cli::cli_alert_success(msg)
+}

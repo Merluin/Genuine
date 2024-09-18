@@ -1,0 +1,131 @@
+---
+title: "Dataset_description"  
+output: html_document  
+date: "2024-09-18"  
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Dataset Description
+
+The dataset in *psychopy_dataset.RData* contains information about various attributes of a study involving participants, their responses, and video stimuli. The data is collected from experiments that focus on emotion authenticity discrimination and intensity judgment tasks.
+
+### Loading the Dataset
+
+To load the dataset into R, you can use the following code:
+
+```{r , echo=TRUE, eval = FALSE}
+# Load the dataset
+load("data/psychopy_dataset.RData") 
+
+```
+
+### PEDFE videoclips info columns
+
+1. **File.name**:  
+   - Variable: `File.name`  
+   - Description: The filename of the PEDFE video clip shown during the experiment.  
+   - Type: Character  
+
+2. **File.emotion**:  
+   - Variable: `File.emotion`  
+   - Description: The emotion depicted in the video clip (e.g., Anger, Happiness, Fearfull).  
+   - Type: Factor  
+
+3. **File.elicitation**:  
+   - Variable: `File.elicitation`  
+   - Description: The method used to elicit the emotion, categorized as "genuine" or "paused."  
+   - Type: Character  
+   
+### Participant Columns
+
+4. **Pt.id**:  
+   - Variable: `Pt.id`  
+   - Description: Identifier for the participant.  
+   - Type: Numeric  
+
+5. **Pt.age**:  
+   - Variable: `Pt.age`  
+   - Description: Age of the participant.  
+   - Type: Numeric  
+
+6. **Pt.gender**:  
+   - Variable: `Pt.gender`  
+   - Description: Gender of the participant.  
+   - Type: Character  
+
+7. **Pt.ccPAS**:  
+   - Variable: `Pt.ccPAS`  
+   - Description: Categorical data indicating TMS conditions.  
+   - Type: Character  
+
+8. **Pt.group**:  
+   - Variable: `Pt.group`  
+   - Description: Group assignment, indicating specific experimental groups.  
+   - Type: Factor  
+
+### Authenticity Emotion Discrimination (AED) Task Columns
+
+9. **AED.accuracy**:  
+   - Variable: `AED.accuracy`  
+   - Description: Whether the key response was correct (1) or not (0) in the AED task.  
+   - Type: Integer  
+
+9. **AED.resp**:  
+   - Variable: `AED.resp`  
+   - Description: The key response in the AED task.  
+   - Type: Character  
+   
+10. **AED.intensity**:  
+   - Variable: `AED.intensity`  
+   - Description: Response value recorded on the "genuine" slider task.  
+   
+### Emotion Intensity Judgment task (EIJ) Columns
+
+11. **EIJ.accuracy**:  
+   - Variable: `EIJ.accuracy`  
+   - Description: Measure of accuracy in the emotion recognition task (binomial e.g., 1,0).  
+   - Type: int  
+
+12. **EIJ.label**:  
+   - Variable: `EIJ.label`  
+   - Description: Name of the object (e.g., emotion) clicked by the mouse.  
+   - Type: Character  
+
+13. **EIJ.intensity**:  
+   - Variable: `EIJ.intensity`  
+   - Description: Response value recorded on the "emotion" slider task.  
+   - Type: Numeric  
+
+### Technical Setup Columns
+14. **Exp.date**:  
+   - Variable: `Exp.date`  
+   - Description: Date and time when the session was conducted.  
+   - Type: Character 
+   
+15. **Exp.session**:  
+   - Variable: `Exp.session`  
+   - Description: Type of session, categorizing experimental phases.  
+   - Type: Factor 
+   
+16. **Exp.name**:  
+   - Variable: `Exp.name`  
+   - Description: Name of the experiment, labeled as "genuine."  
+   - Type: Character  
+
+17. **Exp.version**:  
+   - Variable: `Exp.version`  
+   - Description: Version of PsychoPy used for the experiment.  
+   - Type: Character  
+
+18. **Exp.frameRate**:  
+   - Variable: `Exp.frameRate`  
+   - Description: Frame rate of the experiment's display.  
+   - Type: Numeric  
+
+ 
+

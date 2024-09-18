@@ -10,11 +10,12 @@ library(car)
 
 #load data
 
-dati <- read.csv(filename, sep= sep_)
+dati <- read.csv(filename, sep= sep_) %>%
+  data.frame()
 
 ## Preparing dataframe
 #### Removing unused variables
-# dati <- dati[,-1] done manualy orodata
+dati <- dati[,-1] 
 rownames(dati) <- c()
 
 IRI <- paste0("iri_", 1:28)
@@ -28,31 +29,39 @@ colnames(dati)[4] <- "gender"
 colnames(dati)[5] <- "age"
 colnames(dati)[6] <- "hand"
 
-ordine.corretto<-subjectorder
+ordine.corretto<- dati%>%
+  drop_na(subject) %>%
+  pull(subject)
+
 dati<-dati[ordine.corretto,]
 
-id <- 1 : nrow(dati)
-dati<-cbind(id,dati)
+Pt.id <- 1 : nrow(dati)
+dati<-cbind(Pt.id,dati)
 
 # Crearing ID factor for repeated measure analysis
 
-dati$id <- as.factor(dati$id)
+dati$Pt.id <- as.factor(dati$Pt.id)
 
 rownames(dati) <- c()
-dati <- dati[,-c(2,3)]
+#dati <- dati[,-c(2,3)]
 
-#IRI
-dati$iri_3 <- recode(dati$iri_3, "1 = '5'; 2 = '4'; 3='3'; 4 = '2'; 5='1'")
-dati$iri_4 <- recode(dati$iri_4, "1 = '5'; 2 = '4'; 3='3'; 4 = '2'; 5='1'")
-dati$iri_7 <- recode(dati$iri_7, "1 = '5'; 2 = '4'; 3='3'; 4 = '2'; 5='1'")
-dati$iri_12 <- recode(dati$iri_12, "1 = '5'; 2 = '4'; 3='3'; 4 = '2'; 5='1'")
-dati$iri_13 <- recode(dati$iri_13, "1 = '5'; 2 = '4'; 3='3'; 4 = '2'; 5='1'")
-dati$iri_14 <- recode(dati$iri_14, "1 = '5'; 2 = '4'; 3='3'; 4 = '2'; 5='1'")
-dati$iri_15 <- recode(dati$iri_15, "1 = '5'; 2 = '4'; 3='3'; 4 = '2'; 5='1'")
-dati$iri_18 <- recode(dati$iri_18, "1 = '5'; 2 = '4'; 3='3'; 4 = '2'; 5='1'")
-dati$iri_19 <- recode(dati$iri_19, "1 = '5'; 2 = '4'; 3='3'; 4 = '2'; 5='1'")
+# Recode the IRI columns and convert them back to numeric
+dati$iri_3 <- as.numeric(recode(dati$iri_3, "1 = '5'; 2 = '4'; 3 = '3'; 4 = '2'; 5 = '1'"))
+dati$iri_4 <- as.numeric(recode(dati$iri_4, "1 = '5'; 2 = '4'; 3 = '3'; 4 = '2'; 5 = '1'"))
+dati$iri_7 <- as.numeric(recode(dati$iri_7, "1 = '5'; 2 = '4'; 3 = '3'; 4 = '2'; 5 = '1'"))
+dati$iri_12 <- as.numeric(recode(dati$iri_12, "1 = '5'; 2 = '4'; 3 = '3'; 4 = '2'; 5 = '1'"))
+dati$iri_13 <- as.numeric(recode(dati$iri_13, "1 = '5'; 2 = '4'; 3 = '3'; 4 = '2'; 5 = '1'"))
+dati$iri_14 <- as.numeric(recode(dati$iri_14, "1 = '5'; 2 = '4'; 3 = '3'; 4 = '2'; 5 = '1'"))
+dati$iri_15 <- as.numeric(recode(dati$iri_15, "1 = '5'; 2 = '4'; 3 = '3'; 4 = '2'; 5 = '1'"))
+dati$iri_18 <- as.numeric(recode(dati$iri_18, "1 = '5'; 2 = '4'; 3 = '3'; 4 = '2'; 5 = '1'"))
+dati$iri_19 <- as.numeric(recode(dati$iri_19, "1 = '5'; 2 = '4'; 3 = '3'; 4 = '2'; 5 = '1'"))
 
-iri_tot <- apply(dati[,IRI],1,sum)
+# Ensure all IRI columns are numeric
+dati[, IRI] <- lapply(dati[, IRI], function(x) as.numeric(as.character(x)))
+
+# Calculate the total sum for IRI
+iri_tot <- apply(dati[, IRI], 1, sum)
+
 
 # For IRI, scoring of subscales is possibile too. Subscales are:  
 #   
@@ -78,7 +87,7 @@ tas_tot <- apply(dati[,TAS],1,sum)
 dati <- cbind(dati,iri_tot, fantasy, perspective_taking, personal_distress, empathic_concern, tas_tot)
 attach(dati)
 
-scoring <- data.frame(id,group,gender,age,hand,fantasy,perspective_taking,empathic_concern,personal_distress,iri_tot,tas_tot)
+scoring <- data.frame(Pt.id,group,gender,age,hand,fantasy,perspective_taking,empathic_concern,personal_distress,iri_tot,tas_tot)
 
 detach(dati)
 
