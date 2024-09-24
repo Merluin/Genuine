@@ -28,9 +28,9 @@ n <- length(unique(dataset$participant)) # Calculate the number of unique partic
 # Assign participants to groups based on the chronological order of data collection
 treatment_group <- c(1,2,3,4,5,11,12,13,14,17,19,22,25,26,27,37)
 control_group <- c(6,7,8,9,10,15,16,18,20,21,23,24,28,29,30,39,47,48)
-m1_group <- c(31,32,33,34,35,36,38,40,41,42,43,44,45,46,49)
+m1_group <- c(31,32,33,34,35,36,38,40,41,42,43,44,45,46,49,53)
 shame <- c(50,51,52)
-
+m1_inv <- c(54)
 # Modify the dataset
 dataset <- dataset %>%
   # Mutate the 'ccPAS' and 'Group' columns based on participant groups
@@ -39,7 +39,8 @@ dataset <- dataset %>%
          Group = case_when(participant %in% control_group ~ "Ctrl2rpSTS-rIFG", 
                            participant %in% m1_group ~ "Exp1rIFG-rM1",
                            participant %in% treatment_group ~ "Ctrl1rIFG-rpSTS",
-                           participant %in% shame ~ "shame")) %>%
+                           participant %in% shame ~ "shame",
+                           participant %in% m1_inv ~ "Exp2rM1-rIFG")) %>%
   # Filter rows to include only the first repetition of each trial
   filter(Trials_loop.thisRepN == 0) %>%
   # Mutate 'Emotion', 'group', and 'Session' columns for consistency
@@ -47,7 +48,7 @@ dataset <- dataset %>%
                              emotion == "fear" ~ "Fearfull",
                              emotion == "happiness" ~ "Happiness"),
          emotion = factor(Emotion, levels = c("Anger", "Fearfull", "Happiness")),
-         group = factor(Group, levels = c("Exp1rIFG-rM1", "Ctrl1rIFG-rpSTS", "Ctrl2rpSTS-rIFG", "shame")),
+         group = factor(Group, levels = c("Exp1rIFG-rM1", "Ctrl1rIFG-rpSTS", "Ctrl2rpSTS-rIFG", "shame","Exp2rM1-rIFG")),
          Session = case_when(session == 1 ~ "baseline",
                              session == 2 ~ "T0",
                              session == 3 ~ "T20"),
@@ -77,9 +78,9 @@ dataset <- dataset %>%
     Exp.name = expName,
     Exp.version = psychopyVersion,
     Exp.frameRate = frameRate
-  )%>%
-  filter(
-    Pt.id != 15, Pt.id != 23 )
+   ) %>%
+   filter(
+     Pt.id != 15, Pt.id != 23 )
 
 
 # data for EAD

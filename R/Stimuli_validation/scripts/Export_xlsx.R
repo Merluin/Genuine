@@ -60,6 +60,11 @@ addWorksheet(wb, sheetName = "demography")
 # Write data to the corresponding sheet
 writeData(wb, sheet = "demography", demography)
 
+# Add a new sheet with the formatted name
+addWorksheet(wb, sheetName = "Table.metrics")
+# Write data to the corresponding sheet
+writeData(wb, sheet = "Table.metrics", table_validation)
+
 # Save the workbook
 saveWorkbook(wb, "data/Validation_summary_full_pts.xlsx", overwrite = TRUE)
 

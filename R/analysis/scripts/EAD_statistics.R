@@ -38,10 +38,25 @@ dat_session1 <- SDT_genuine %>%
 anova_d_baseline <- aov_ez("Pt.id", "d_prime", dat_session1, within = "File.emotion", between = "Pt.group")
 
 # full model
+ 
 anova_d <- aov_ez("Pt.id", "d_prime", SDT_genuine, within = c("File.emotion","Exp.session"), between = "Pt.group")
+
 interaction_d <- emmeans(anova_d, pairwise ~ Exp.session|Pt.group)
 maind_session <- emmeans(anova_d, pairwise ~ Exp.session)
 maind_emotion <- emmeans(anova_d, pairwise ~ File.emotion)
+
+emm_df <- as.data.frame(interaction_d) %>%
+  filter(Exp.session != ".")
+ggplot(emm_df, aes(x = Exp.session, y = emmean, color = Pt.group, group = Pt.group)) +
+  geom_point(position = position_dodge(width = 0.1)) +
+  geom_line(position = position_dodge(width = 0.1)) +
+  geom_errorbar(aes(ymin = emmean - SE, ymax = emmean + SE), 
+                width = 0.2, position = position_dodge(width = 0.1)) +
+  labs(title = "Interaction Between Session and Group", 
+       x = "Experimental Session", 
+       y = "Estimated Marginal Means of d_prime") +
+  theme_minimal()
+
 
 # Model Fitting criterion
 #ANOVA for baseline

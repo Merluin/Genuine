@@ -21,7 +21,7 @@ run_script("scripts/Export_xlsx.R") # return data/Genuine_summary_full_pts.xlsx
 # statistics
 run_script("scripts/EAD_statistics.R") 
 run_script("scripts/EIJ_statistics.R") 
-run_script("scripts/Demography_statistics.R") 
+run_script("scripts/Demography.R") 
 
 #################################################
 # 

@@ -39,9 +39,9 @@ dataset <- dataset %>%
 dataset <- dataset %>%
   filter(Trials_loop.thisRepN == 0) %>%
   mutate(Emotion = case_when(emotion == "anger" ~ "Anger",
-                             emotion == "fear" ~ "Fearfull",
+                             emotion == "fear" ~ "Fearful",
                              emotion == "happiness" ~ "Happiness"),
-         Emotion = factor(Emotion, levels = c("Anger", "Fearfull","Happiness")),
+         Emotion = factor(Emotion, levels = c("Anger", "Fearful","Happiness")),
          gender = ifelse(tolower(gender) == "m", "male", "female"),
          Pt.id = sprintf("%02d", as.integer(participant))) %>% # Recode gender for clarity
   # Select and rename columns for the final dataset
@@ -49,6 +49,7 @@ dataset <- dataset %>%
     File.name = file,
     File.emotion = Emotion,
     File.elicitation = elicitation,
+    File.excluded = excluded,
     Pt.id,
     Pt.age = eta,
     Pt.gender = gender,
@@ -63,7 +64,8 @@ dataset <- dataset %>%
     Exp.version = psychopyVersion,
     Exp.frameRate = frameRate
   ) %>%
-  arrange(Pt.id)
+  arrange(Pt.id) %>%
+  filter(File.excluded != 1)
 
 # data for EAD
 emotion_accuracy <- dataset %>%
@@ -129,13 +131,77 @@ EA <- EA_dataset %>%
 demography <- dataset %>%
   filter(File.name == "1_rg_2.mp4") %>%
   select(  Pt.id, Pt.gender, Pt.age) %>%
-  mutate(gender = ifelse(participant== 11,"male",gender),
-         eta = ifelse(participant== 11,23,eta))
+  mutate(gender = ifelse(Pt.id== 11,"male",Pt.gender),
+         eta = ifelse(Pt.id== 11,23,Pt.age))
 
+
+table_validation <- rbind(
+  
+  
+  dataset %>% 
+    filter(EIJ.accuracy == 1)%>%
+    group_by(Pt.id, File.emotion) %>%
+    summarise(slider = mean(abs(AED.intensity), na.rm = TRUE),
+              accuracy = mean(abs(AED.accuracy), na.rm = TRUE))%>%
+    group_by(File.emotion) %>%
+    summarise(
+      mean_silder = round(mean(slider, na.rm = TRUE), 2),
+      sd_slider = round(sd(slider, na.rm = TRUE), 2),
+      mean_acc = round(mean(accuracy, na.rm = TRUE), 2),
+      sd_acc = round(sd(accuracy, na.rm = TRUE), 2)) %>%
+    mutate(
+      #Genuine_intensity = paste(mean_silder, "±", sd_slider),
+      AED = paste(mean_acc, "±", sd_acc)) %>%
+    select(File.emotion, AED) %>%  # Select only the final formatted columns
+    pivot_longer(cols = c(AED), names_to = "Metric", values_to = "Value") %>%
+    pivot_wider(names_from = File.emotion, values_from = Value),
+  
+  
+SDT_genuine %>%
+  group_by(File.emotion) %>%
+  summarise(d_mean = round(mean(d_prime),2),
+            d_sd = round(mean(d_prime),2),
+            c_mean = round(mean(c),2),
+            c_sd = round(mean(c),2)) %>%
+  mutate(Sensitivity_d_prime = paste(d_mean, "±", d_sd),
+         Bias_c = paste(c_mean, "±", c_sd)) %>%
+  select(File.emotion, Sensitivity_d_prime, Bias_c) %>%  # Select only the necessary columns
+  pivot_longer(cols = c(Sensitivity_d_prime, Bias_c), names_to = "Metric", values_to = "Value") %>%
+  pivot_wider(names_from = File.emotion, values_from = Value),
+
+dataset %>% 
+  group_by(Pt.id, File.emotion) %>%
+  summarise(slider = mean(abs(EIJ.intensity), na.rm = TRUE),
+            accuracy = mean(abs(EIJ.accuracy), na.rm = TRUE))%>%
+  group_by(File.emotion) %>%
+  summarise(
+    mean_silder = round(mean(slider, na.rm = TRUE), 2),
+    sd_slider = round(sd(slider, na.rm = TRUE), 2),
+    mean_acc = round(mean(accuracy, na.rm = TRUE), 2),
+    sd_acc = round(sd(accuracy, na.rm = TRUE), 2)) %>%
+  mutate(
+    #Emotion_accuracy = paste(mean_acc, "±", sd_acc),
+    EIJ = paste(mean_silder, "±", sd_slider)) %>%
+  select(File.emotion, EIJ) %>%  # Select only the final formatted columns
+  pivot_longer(cols = c(EIJ), names_to = "Metric", values_to = "Value") %>%
+  pivot_wider(names_from = File.emotion, values_from = Value),
+
+EA_dataset %>%
+  ungroup() %>%
+  group_by(File.emotion) %>%
+  summarise(
+    mean = round(mean(EIJ.intensity, na.rm = TRUE), 2),
+    sd = round(sd(EIJ.intensity, na.rm = TRUE), 2)) %>%
+  mutate(
+    EA = paste(mean, "±", sd)) %>%
+  select(File.emotion, EA) %>%  # Select only the final formatted columns
+  pivot_longer(cols = EA, names_to = "Metric", values_to = "Value") %>%
+  pivot_wider(names_from = File.emotion, values_from = Value)
+)
 
 # Save the data in .RData format
 save(dataset, emotion_accuracy, genuine_accuracy, SDT_genuine, d_wide,c_wide,
-     EA_dataset, genuine_intensity, emotion_intensity, EA, demography,
+     EA_dataset, genuine_intensity, emotion_intensity, EA, demography,table_validation,
      file = paste0("data/",datasetname,".RData"))
 #################################################
 # 
