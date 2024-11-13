@@ -5,7 +5,7 @@
 #  Date:        05/03/2024
 #  Description: Authenticity Emotion Discrimination (AED)
 #
-#  Update:      08/09/2024
+#  Update:      12/11/2024
 ###########################################################################
 
 # Clearing workspace
@@ -13,10 +13,10 @@ rm(list=ls()) # Clear the existing workspace to avoid conflicts
 
 # Load dependencies
 devtools::load_all() # Load necessary functions and packages
-# replace_csv("session",003) pt 5 session 3 was set to 1
 
 # Data loading
 load("data/psychopy_dataset.RData") 
+
 
 # Signal detection (SDT)
 # Hits: Correct identification of genuine emotions (genuine yes response when the emotion is genuinely displayed).
@@ -29,45 +29,63 @@ load("data/psychopy_dataset.RData")
 # d' = Z(HR) - Z(FAR), where Z() is the z-score transformation.
 # c = -0.5 * [Z(HR) + Z(FAR)], which represents the response bias.
 
+sdt_data <- dataset %>%
+  GenuineDetection() 
 
-# Model Fitting d prime
-#ANOVA for baseline
-dat_session1 <- SDT_genuine %>%
+# Filter data for the baseline session
+dat_session1 <- sdt_data%>%
   filter(Exp.session == "baseline")
 
+# Perform ANOVA for sensitivity (d') at baseline
 anova_d_baseline <- aov_ez("Pt.id", "d_prime", dat_session1, within = "File.emotion", between = "Pt.group")
 
-# full model
- 
-anova_d <- aov_ez("Pt.id", "d_prime", SDT_genuine, within = c("File.emotion","Exp.session"), between = "Pt.group")
+# Perform ANOVA for full model on sensitivity (d')
+anova_d <- aov_ez("Pt.id", "d_prime", sdt_data, within = c("File.emotion","Exp.session"), between = "Pt.group")
 
-interaction_d <- emmeans(anova_d, pairwise ~ Exp.session|Pt.group)
+# Post-hoc comparisons for session and group interactions
+interaction_d <- emmeans(anova_d, pairwise ~ Exp.session|Pt.group, adjust = "bonferroni")
 maind_session <- emmeans(anova_d, pairwise ~ Exp.session)
 maind_emotion <- emmeans(anova_d, pairwise ~ File.emotion)
 
-emm_df <- as.data.frame(interaction_d) %>%
-  filter(Exp.session != ".")
-ggplot(emm_df, aes(x = Exp.session, y = emmean, color = Pt.group, group = Pt.group)) +
-  geom_point(position = position_dodge(width = 0.1)) +
-  geom_line(position = position_dodge(width = 0.1)) +
-  geom_errorbar(aes(ymin = emmean - SE, ymax = emmean + SE), 
-                width = 0.2, position = position_dodge(width = 0.1)) +
-  labs(title = "Interaction Between Session and Group", 
-       x = "Experimental Session", 
-       y = "Estimated Marginal Means of d_prime") +
-  theme_minimal()
 
 
-# Model Fitting criterion
-#ANOVA for baseline
-anova_c_baseline <- aov_ez("Pt.id", "c", SDT_genuine, within = "File.emotion", between = "Pt.group")
 
-anova_c <- aov_ez("Pt.id", "c", SDT_genuine, within = c("File.emotion","Exp.session"), between = "Pt.group")
+# Perform ANOVA for response bias (c) at baseline
+anova_c_baseline <- aov_ez("Pt.id", "c", dat_session1, within = "File.emotion", between = "Pt.group")
+
+# Perform ANOVA for full model on response bias (c)
+anova_c <- aov_ez("Pt.id", "c", sdt_data, within = c("File.emotion","Exp.session"), between = "Pt.group")
 mainc_emotion <- emmeans(anova_c, pairwise ~ File.emotion)
+interaction_c <- emmeans(anova_c, pairwise ~ Exp.session|Pt.group)
+
+# Filter for trials with AED intensity >= 5 for meta-analysis
+meta_sdt_data <- dataset %>%
+  filter(abs(AED.intensity) >= 4) %>% 
+  GenuineDetection() %>%
+  mutate(analysis = "meta d'")
+
+# Filter meta-analysis data for baseline session
+meta_dat_session1 <- meta_sdt_data%>%
+  filter(Exp.session == "baseline") 
+
+# Perform ANOVA for sensitivity (meta d') at baseline
+anova_Md_baseline <- aov_ez("Pt.id", "d_prime", meta_dat_session1, within = "File.emotion", between = "Pt.group")
+
+# Perform ANOVA for sensitivity (meta d') for full model
+anova_Md <- aov_ez("Pt.id", "d_prime", meta_sdt_data, within = c("File.emotion","Exp.session"), between = "Pt.group")
+
+# Perform ANOVA for response bias (meta c) at baseline
+anova_Mc_baseline <- aov_ez("Pt.id", "c", meta_dat_session1, within = "File.emotion", between = "Pt.group")
+
+# Perform ANOVA for response bias (meta c) for full model
+anova_Mc <- aov_ez("Pt.id", "c", meta_sdt_data, within = c("File.emotion","Exp.session"), between = "Pt.group")
 
 
-# plots
-data_genuine_mean <- SDT_genuine %>%
+
+
+
+# Calculate mean d' and c for each emotion, session, and group
+data_genuine_mean <-sdt_data %>%
   group_by(File.emotion, Exp.session, Pt.group) %>%
   summarise(d_prime = mean(d_prime, na.rm = TRUE),
             c = mean(c, na.rm = TRUE)) %>%
@@ -75,92 +93,119 @@ data_genuine_mean <- SDT_genuine %>%
 
 x_breaks <- c("baseline", "T0", "T20")
 
-
-plot_d <- data_genuine_mean %>%
-  group_by(Exp.session, Pt.group) %>%
-  summarise(d_prime = mean(d_prime)) %>%
-  ungroup() %>%
-  ggplot(aes(x = Exp.session, y = d_prime, group = Pt.group, color = Pt.group)) +
-  geom_point() +
-  geom_line() +
-  stat_summary(fun = mean, geom = "line") +  # Adjust this as needed
-  coord_fixed(ylim = c(0.8, 2)) +
+# Plot for sensitivity (d')
+plot_d <- as.data.frame(interaction_d) %>%
+  filter(Exp.session != ".") %>%
+  ggplot(aes(x = Exp.session, y = emmean, group = Pt.group, shape = Pt.group)) +
+  geom_point(position = position_dodge(width = 0.3), size = 3, color = "black") +
+  geom_line(position = position_dodge(width = 0.3), size = 0.5, color = "black") +
+  geom_errorbar(aes(ymin = emmean - SE, ymax = emmean + SE), 
+                width = 0.2, position = position_dodge(width = 0.3), color = "black") +
+  theme_minimal() +
+  coord_fixed(ylim = c(0.5, 2.5)) +
   labs(x = "", y = "Sensitivity (dprime)") +
-  theme_minimal() + 
-  theme(legend.position = "none") +
-  scale_x_discrete(breaks = x_breaks) +
   theme(
+    legend.position = "none", # Remove legend
+    panel.grid = element_blank(), # Remove grid lines
+    axis.line = element_line(color = "black", size = 0.5), # Add black axis lines
+    axis.ticks = element_line(color = "black", size = 0.5), # Add axis ticks
+    axis.ticks.length = unit(0.2, "cm") # Set tick length
+  )+ theme(
     plot.margin = unit(c(1, 1, 1, 1), "cm")  # Adjust margins to be consistent
   )+
-  scale_color_manual(values = c("Ctrl1rIFG-rpSTS" = "#D9A9CF", "Ctrl2rpSTS-rIFG" = "#7E5084", "Exp1rIFG-rM1" = "#4A7F99"))+
+  scale_x_discrete(breaks = x_breaks)  +
   ggsignif::geom_signif(
-    xmin = 1, xmax = 2, y_position = 1.6, textsize = 5, color = "#4A7F99",
-    annotations = c("**"), tip_length = 0) +
+    xmin = 1 + 0.1, xmax = 2 + 0.1, y_position = 1.75, textsize = 4, 
+    size = 0.4, # Make the bar more subtle by reducing thickness
+    color = "black", annotations = c("**"), tip_length = 0, 
+    position = position_dodge(width = 0.1)) +
   ggsignif::geom_signif(
-    xmin = 1, xmax = 3, y_position = 1.8, textsize = 5, color = "#4A7F99",  # Lowered the y_position from 1.9 to 1.85
-    annotations = c("***"), tip_length = 0)
+    xmin = 1 + 0.1, xmax = 3 + 0.1, y_position = 2.05, textsize = 4, 
+    size = 0.4, # Make the bar more subtle
+    color = "black", annotations = c("***"), tip_length = 0, 
+    position = position_dodge(width = 0.1)) +
+  ggsignif::geom_signif(
+    xmin = 1 + 0.03, xmax = 2 + 0.03, y_position = 1.6, textsize = 4, 
+    size = 0.4, # Subtle bar
+    color = "black", annotations = c("*"), tip_length = 0, # Use superscript
+    position = position_dodge(width = 0.1)) +
+  ggsignif::geom_signif(
+    xmin = 1 + 0.03, xmax = 3 + 0.03, y_position = 1.9, textsize = 4, 
+    size = 0.4, # Subtle bar
+    color = "black", annotations = c("+"), tip_length = 0, 
+    position = position_dodge(width = 0.1))
 
- plot_c <- data_genuine_mean %>%
-   group_by(Exp.session, Pt.group) %>%
-   summarise(c = mean(c)) %>%
-   ungroup() %>%
-   ggplot(aes(x = Exp.session, y = c, group = Pt.group, color = Pt.group)) +
-   geom_point() +
-   geom_line() +
-   stat_summary(fun = mean, geom = "line") +  # Adjust this as needed
+
+# Extract the legend from the plot
+plot <- as.data.frame(interaction_d) %>%
+  filter(Exp.session != ".") %>%
+  ggplot(aes(x = Exp.session, y = emmean, group = Pt.group, shape = Pt.group)) +
+  geom_point(position = position_dodge(width = 0.3), size = 3, color = "black")+ 
+  guides(shape = guide_legend(nrow = 1))
+legend <- cowplot::get_legend(plot)
+
+# Plot for response bias (c)
+ plot_c <- as.data.frame(interaction_c) %>%
+   filter(Exp.session != ".") %>%
+   ggplot(aes(x = Exp.session, y = emmean, group = Pt.group, shape = Pt.group)) +
+   geom_point(position = position_dodge(width = 0.3), size = 3, color = "black") +
+   geom_line(position = position_dodge(width = 0.3), size = 0.5, color = "black") +
+   geom_errorbar(aes(ymin = emmean - SE, ymax = emmean + SE), 
+                 width = 0.2, position = position_dodge(width = 0.3), color = "black") +
+   theme_minimal() +
    coord_fixed(ylim = c(-0.4, 0.4)) +
    labs(x = "", y = "Bias (criterion)") +
-   theme_minimal() + 
-   theme(legend.position = "none") +
-   scale_x_discrete(breaks = x_breaks) +
-   scale_color_manual(values = c("Ctrl1rIFG-rpSTS" = "#D9A9CF", "Ctrl2rpSTS-rIFG" = "#7E5084", "Exp1rIFG-rM1" = "#4A7F99"))+
    theme(
-     aspect.ratio = 1/2 ) # Adjust aspect ratio to make the 
-   
- print(plot_c)
- print(plot_d)
+     legend.position = "none", # Remove legend
+     panel.grid = element_blank(), # Remove grid lines
+     axis.line = element_line(color = "black", size = 0.5), # Add black axis lines
+     axis.ticks = element_line(color = "black", size = 0.5), # Add axis ticks
+     axis.ticks.length = unit(0.2, "cm") # Set tick length
+   ) 
+   plot.margin = unit(c(1, 1, 1, 1), "cm")  # Adjust margins to be consistent
+ 
+ 
+ 
 
- plot_sd <- cowplot::plot_grid(
-   plot_d, plot_c, #plot_c, plot_d,
-   nrow = 2,  # Use nrow to specify rows instead of rows
-   align = 'vh',  # Align vertically
-   axis = 'lr',
-   labels = "AUTO" # Align left and right axes
+ # Combine the two plots in one row
+ plots_row <- cowplot::plot_grid(
+   plot_d, plot_c, 
+   ncol = 1, 
+   rel_widths = c(1, 1), # Ensure equal widths for both plots
+   align = "vh" # Align vertically and horizontally to make them the same size
  )
  
-   
- # Running ANCOVA for d_delta
- ancova_d_delta <- aov(d_delta ~ Pt.group + fantasy + perspective_taking + empathic_concern + personal_distress, 
+ 
+ # Combine the plots row with the legend
+ final_plot <- cowplot::plot_grid(
+   plots_row, # Add the row of plots
+   legend, # Add the legend below
+   ncol = 1, # Combine vertically
+   rel_heights = c(1, 0.1) # Adjust relative heights (legend closer to the plots)
+ )
+ 
+ # Print the final plot
+ print(final_plot)
+ 
+ # Running ANCOVA for d_delta IRI
+ ancova_d_delta <- aov(d_delta ~ Pt.group * (fantasy + perspective_taking + empathic_concern + personal_distress + iri_tot), 
                        data = ΓAED)
  summary(ancova_d_delta)
- 
- ancova_model <- aov(d_delta ~ Pt.group + iri_tot + tas_tot, data = ΓAED)
+main_group <- emmeans(ancova_d_delta, pairwise ~ Pt.group)
+
+#Running ANCOVA for d_delta TAS
+ ancova_model <- aov(d_delta ~ Pt.group *  tas_tot, data = ΓAED)
  summary(ancova_model)
+ main_group <- emmeans(ancova_model, pairwise ~ Pt.group)
  
- # Running ANCOVA for c_delta
- ancova_c_delta <- aov(c_delta ~ Pt.group + fantasy + perspective_taking + empathic_concern + personal_distress, 
+# Running ANCOVA for c_delta IRI
+ ancova_c_delta <- aov(c_delta ~ Pt.group * (fantasy + perspective_taking + empathic_concern + personal_distress + iri_tot), 
                        data = ΓAED)
  summary(ancova_c_delta)
-
- ancova_model <- aov(c_delta ~ Pt.group + iri_tot + tas_tot, data = ΓAED)
+ 
+# Running ANCOVA for c_delta TAS 
+ ancova_model <- aov(c_delta ~ Pt.group * tas_tot, data = ΓAED)
  summary(ancova_model)
- 
- 
- 
- # slider analysis
- 
- data <- dataset %>% 
-   filter(EIJ.accuracy == 1) %>%
-   group_by(Pt.id,File.emotion,Exp.session,Pt.group) %>%
-   summarise(slider = abs(mean(EIJ.intensity, na.rm = TRUE)))
- 
-anova <- aov_ez("Pt.id", "slider", data, within = c("File.emotion","Exp.session"), between = "Pt.group")
- 
- main_emotion <- emmeans(anova, pairwise ~ File.emotion)
- main_Session <- emmeans(anova, pairwise ~ Exp.session)
- 
- inter_emotion_session <- emmeans(anova, pairwise ~  File.emotion | Exp.session)
- inter_session_emotion <- emmeans(anova, pairwise ~   Exp.session | File.emotion)
  
 #################################################
 # 

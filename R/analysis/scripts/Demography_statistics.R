@@ -18,6 +18,11 @@ devtools::load_all()  # Load necessary functions and packages
 # Data loading
 load("data/psychopy_dataset.RData") 
 
+demography <- demography %>%
+  filter( Pt.group != "sham") %>%
+  mutate(Pt.group = factor(Pt.group, levels = c("Exp1rpSTS-rIFG", "Ctrl1rIFG-rpSTS", "Exp2rIFG-rM1", "Ctrl2rM1-rIFG")))
+
+
 # Group-wise Calculations
 #   - Objective: Calculate mean age, standard deviation, and count by gender for each group
 group_stats <- demography %>%

@@ -28,7 +28,7 @@ dataset_concatenation <- function(path,dataset_name) {
     bind_rows() %>%
     mutate(across(where(is.character), str_remove_all, pattern = "[\\[|\\] ']"))
   
-
+  
   # save data
   save(dataset, file= paste0("data/", dataset_name, ".RData"))
 }

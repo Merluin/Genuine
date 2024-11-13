@@ -5,7 +5,7 @@
 #  Date:        23/01/2024
 #  Description: Emotion Intensity Judgment (EIJ)
 #
-#  Update:      23/01/2024
+#  Update:      12/11/2024
 ###########################################################################
 
 # Clearing workspace
@@ -44,6 +44,14 @@ car::Anova(fit, type = "III")
 plot(allEffects(fit))
 main_emotion <- emmeans(fit, pairwise ~ File.emotion, adjust = "bonf")
 
+fit <- lmer(EIJ.intensity ~ File.elicitation * File.emotion  + (1 | Pt.id),
+             data = dataset)
+car::Anova(fit, type = "III")
+
+model <- aov_ez("Pt.id", "EIJ.intensity", data = dataset, within = c( "File.elicitation" , "File.emotion" ) )
+            
+main_emotion <- emmeans(model, pairwise ~ File.elicitation | File.emotion, adjust = "bonf")
+
 
 # Fit the generalized linear mixed-effects model (lmer)
 fit0 <- lmer(EA ~ 1  + (1 | Pt.id),
@@ -71,7 +79,25 @@ plot(allEffects(fit))
 
 # ANOVA-type analysis of the GLMM using Wald chi-square tests
 car::Anova(fit)
-emmeans(fit, pairwise ~  File.emotion, adjust = "fdr")
+emmeans(fit, pairwise ~  File.emotion, adjust = "bonf")
+
+# Accuracy table
+mean_sd_table <- dataset %>%
+  group_by(Pt.group, File.emotion) %>%
+  summarise(
+    mean = mean(EIJ.accuracy) * 100,
+    sd = sd(EIJ.accuracy) * 100,
+    .groups = 'drop'
+  ) %>%
+  mutate(mean_sd = paste0(round(mean, 1), " ± ", round(sd, 1))) %>%
+  select(-mean, -sd) %>%
+  spread(File.emotion, mean_sd) %>%
+  setNames(c("Group", "Anger", "Fearful", "Happiness")) %>%
+  flextable() %>%
+  autofit() %>%
+  theme_vanilla() %>%
+  fontsize(part = "all", size = 7) %>%
+  set_header_labels(Group = "Group")
 
 #################################################
 # 
