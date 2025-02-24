@@ -76,6 +76,11 @@ emotion_accuracy <- dataset %>%
   select(-c(File.emotion,File.elicitation)) %>%
   spread(label, accuracy) 
 
+emotion <- dataset %>%
+  group_by(File.emotion) %>%
+  summarise(accuracy = mean(EIJ.accuracy,na.rm = TRUE)) %>%
+  ungroup() 
+
 genuine_accuracy <- dataset %>%
   group_by(Pt.id,File.emotion, File.elicitation) %>%
   summarise(accuracy = mean(AED.accuracy,na.rm = TRUE)) %>%

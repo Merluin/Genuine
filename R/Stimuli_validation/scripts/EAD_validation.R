@@ -32,7 +32,7 @@ load("data/validation_dataset.RData")
 
 # Model Fitting d prime
 anova_d <- aov_ez("Pt.id", "d_prime", SDT_genuine, within = c("File.emotion"))
-
+maind_emotion <- emmeans(anova_d, pairwise ~ File.emotion)
 # Model Fitting criterion
 anova_c <- aov_ez("Pt.id", "c", SDT_genuine, within = c("File.emotion"))
 mainc_emotion <- emmeans(anova_c, pairwise ~ File.emotion)
@@ -88,6 +88,10 @@ plot_sd <- cowplot::plot_grid(
   labels = "AUTO" # Align left and right axes
 )
  
+
+emotion_accuracy <- dataset %>%
+  summarise(accuracy = mean(EIJ.accuracy,na.rm = TRUE),
+            sd = sd(EIJ.accuracy,na.rm = TRUE))
 #################################################
 # 
 # END

@@ -17,6 +17,7 @@ devtools::load_all() # Load necessary functions and packages
 # Data loading
 load("data/psychopy_dataset.RData")
 
+
 # Normality Test for the entire RT distribution using Shapiro-Wilk test
 shapiro_test_result <- shapiro.test(EA_dataset$EA)
 
